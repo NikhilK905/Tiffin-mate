@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { toast } from 'react-toastify';
 import { selectUser } from '../store/authSlice';
 import { selectSubscription, setSubscription } from '../store/subscriptionSlice';
-import { PAYMENT_METHODS, RENEW_WINDOW_DAYS, canRenew, markPaid, renew, todayISO, withDefaults } from '../lib/subscription';
+import { ADDONS, PAYMENT_METHODS, RENEW_WINDOW_DAYS, canRenew, markPaid, renew, todayISO, withDefaults } from '../lib/subscription';
 import { formatINR } from '../components/PlanCard';
 
 const fmt = (iso) => new Date(`${iso}T00:00:00`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -92,7 +92,7 @@ export default function Billing() {
             <table className="w-full text-sm">
               <tbody>
                 <tr><td>{plan?.name ?? sub.planId}</td><td className="text-right">{formatINR(sub.price)}</td></tr>
-                {sub.addons.map((id) => <tr key={id}><td>Add-on: {id}</td><td className="text-right">incl.</td></tr>)}
+                {sub.addons.map((id) => <tr key={id}><td>Add-on: {ADDONS.find((a) => a.id === id)?.name}</td><td className="text-right">incl.</td></tr>)}
                 <tr className="border-t font-semibold"><td>Total ({fmt(invoice.period.from)} – {fmt(invoice.period.to)})</td><td className="text-right">{formatINR(invoice.amount)}</td></tr>
               </tbody>
             </table>
