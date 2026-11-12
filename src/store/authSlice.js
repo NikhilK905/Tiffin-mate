@@ -39,12 +39,24 @@ export const login = createAsyncThunk('auth/login', async (form, { getState, rej
   return user;
 });
 
+export const changePassword = createAsyncThunk('auth/changePassword', async ({ current, next }, { getState, rejectWithValue }) => {
+  const { users, currentEmail } = getState().auth;
+  if (users[currentEmail]?.passwordHash !== (await hash(currentEmail, current))) return rejectWithValue('Current password is wrong');
+  if (next.length < 6) return rejectWithValue('New password must be at least 6 characters');
+  return hash(currentEmail, next);
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: { users: { [ADMIN.email]: ADMIN }, currentEmail: null },
   reducers: {
     logout: (state) => {
       state.currentEmail = null;
+    },
+    // payload: any of { name, college, phone, diet: 'veg' | 'nonveg' | 'jain' }; email and role never change here
+    updateProfile: (state, { payload: { name, college, phone, diet } }) => {
+      const user = state.users[state.currentEmail];
+      if (user) Object.assign(user, Object.fromEntries(Object.entries({ name, college, phone, diet }).filter(([, v]) => v !== undefined)));
     },
   },
   extraReducers: (builder) => {
@@ -55,11 +67,14 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         state.currentEmail = payload.email;
+      })
+      .addCase(changePassword.fulfilled, (state, { payload }) => {
+        state.users[state.currentEmail].passwordHash = payload;
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, updateProfile } = authSlice.actions;
 export const selectUser = (state) => state.auth.users[state.auth.currentEmail] ?? null;
 export const selectIsAdmin = (state) => selectUser(state)?.role === 'admin';
 export default authSlice.reducer;
