@@ -8,7 +8,7 @@ import NotificationBell from './NotificationBell';
 
 const linkClass = ({ isActive }) =>
   `block border-b-2 py-2 text-sm font-medium transition hover:text-orange-600 md:py-1 ${
-    isActive ? 'border-orange-600 text-orange-600' : 'border-transparent text-stone-600 dark:text-stone-300'
+    isActive ? 'border-orange-600 text-orange-700 dark:text-orange-400' : 'border-transparent text-stone-700 dark:text-stone-300'
   }`;
 
 export default function Navbar() {
@@ -24,7 +24,7 @@ export default function Navbar() {
     ['/menu', 'Menu'],
     ['/about', 'About'],
     ['/contact', 'Contact'],
-    ...(isAdmin ? [['/admin', 'Admin']] : user ? [['/dashboard', 'My tiffin']] : []),
+    ...(user && !isAdmin ? [['/dashboard', 'My tiffin']] : []), // admins reach /admin through the avatar
   ];
 
   const onLogout = () => {
@@ -35,10 +35,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-10 border-b border-stone-200 bg-stone-50/85 backdrop-blur dark:border-stone-800 dark:bg-stone-950/85">
+    <header className="sticky top-0 z-10 border-b border-orange-100 bg-white/90 shadow-sm backdrop-blur dark:border-stone-800 dark:bg-stone-950/90">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
-        <Link to="/" onClick={() => setOpen(false)} className="mr-auto font-display text-xl font-bold">
-          🍱 Dabba<span className="text-orange-600">Dost</span>
+        <Link to="/" onClick={() => setOpen(false)} className="mr-auto flex items-center gap-2 font-display text-xl font-bold">
+          <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-600 text-lg shadow-sm">🍱</span>
+          <span>Dabba<span className="text-orange-600">Dost</span></span>
         </Link>
         {user && !isAdmin && <NotificationBell />}
         <button
@@ -65,7 +66,7 @@ export default function Navbar() {
           {user ? (
             <div className="mt-2 flex items-center gap-3 md:mt-0">
               <Link to={isAdmin ? '/admin' : '/profile'} onClick={() => setOpen(false)} title="My profile" className="flex items-center gap-2 text-sm font-medium hover:text-orange-600">
-                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 font-bold text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
+                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-turmeric-300 font-bold text-stone-900 dark:bg-turmeric-400 dark:text-orange-300">
                   {user.name[0].toUpperCase()}
                 </span>
                 {user.name.split(' ')[0]}

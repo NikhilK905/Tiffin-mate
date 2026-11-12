@@ -41,9 +41,19 @@ export default function Contact() {
   const err = (key) => errors[key] && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[key]}</p>;
 
   return (
-    <section className="py-12">
-      <h1 className="section-title">Contact us</h1>
-      <p className="muted mt-2">Questions, feedback or a problem with your tiffin? We reply within a day.</p>
+    <section className="py-10">
+      <header>
+        <p className="eyebrow">Get in touch</p>
+        <h1 className="page-title mt-1">Contact us</h1>
+        <p className="muted mt-2">Questions, feedback or a problem with your tiffin? We reply within a day.</p>
+      </header>
+      <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+        {[['✉️', 'hello@dabbadost.example'], ['📞', '+91 90000 00000'], ['📍', 'Sample Nagar, Demo City']].map(([icon, text]) => (
+          <li key={text} className="flex items-center gap-3 rounded-2xl bg-turmeric-100 px-4 py-3 text-sm font-medium dark:bg-stone-900">
+            <span aria-hidden="true" className="text-xl">{icon}</span>{text}
+          </li>
+        ))}
+      </ul>
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         <form onSubmit={submit} noValidate className="card space-y-4">
           <div>

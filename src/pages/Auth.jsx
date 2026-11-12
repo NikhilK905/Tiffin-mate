@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { login, register } from '../store/authSlice';
+import Photo from '../components/Photo';
+import { images } from '../lib/images';
 
 export default function Auth({ mode }) {
   const isRegister = mode === 'register';
@@ -30,16 +32,16 @@ export default function Auth({ mode }) {
   };
 
   return (
-    <section className="mx-auto my-10 grid max-w-4xl overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-(--shadow-soft) md:grid-cols-2 dark:border-stone-800 dark:bg-stone-900">
-      <aside className="bg-gradient-to-br from-orange-600 to-amber-500 p-8 text-white md:p-10">
+    <section className="mx-auto my-8 grid max-w-4xl overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-(--shadow-soft) md:grid-cols-2 dark:border-stone-800 dark:bg-stone-900">
+      <aside className="flex flex-col bg-gradient-to-br from-orange-600 via-orange-500 to-turmeric-400 p-8 text-white md:p-10">
         <p className="font-display text-2xl font-bold">🍱 DabbaDost</p>
-        <p className="mt-6 text-5xl" aria-hidden="true">🍛 🥗 🍚</p>
-        <h2 className="mt-4 font-display text-2xl font-bold">Home-style meals, every day.</h2>
-        <ul className="mt-5 space-y-2 text-sm text-orange-50">
+        <h2 className="mt-8 font-display text-2xl font-bold">Home-style meals, every day.</h2>
+        <ul className="mt-5 space-y-2 text-sm text-white">
           {['Fresh from local home kitchens', 'Delivered to your hostel gate', 'Skip days when you are away'].map((b) => (
             <li key={b} className="flex gap-2"><span aria-hidden="true">✓</span>{b}</li>
           ))}
         </ul>
+        <Photo image={images.thali} className="mt-6 hidden h-40 w-full rounded-2xl border-4 border-white/80 shadow-lg md:block" />
       </aside>
       <form onSubmit={onSubmit} className="space-y-4 p-8 md:p-10">
         <h1 className="font-display text-3xl font-bold">{isRegister ? 'Create your account' : 'Welcome back'}</h1>

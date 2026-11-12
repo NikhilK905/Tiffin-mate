@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import Photo from '../components/Photo';
 import { SkeletonGrid } from '../components/PlanCard';
+import { images } from '../lib/images';
 import { pickDish, todayName } from '../lib/menu';
 
 export default function Menu() {
@@ -11,9 +13,15 @@ export default function Menu() {
   const selected = menu.find((m) => m.day === day) ?? menu[0];
 
   return (
-    <section className="py-12">
-      <h1 className="section-title">This week's menu</h1>
-      <p className="muted mt-2">Where two options are listed, the first is non-veg and the second is veg.</p>
+    <section className="py-10">
+      <header className="grid items-center gap-6 overflow-hidden rounded-3xl bg-turmeric-100 sm:grid-cols-[1fr_16rem] dark:bg-stone-900">
+        <div className="p-6 sm:p-8">
+          <p className="eyebrow">Fresh every day</p>
+          <h1 className="page-title mt-1">This week's menu</h1>
+          <p className="muted mt-2">Where two options are listed, the first is non-veg and the second is veg.</p>
+        </div>
+        <Photo image={images.menu} className="hidden h-full min-h-40 w-full sm:block" />
+      </header>
 
       {status !== 'ready' ? (
         <div className="mt-8 space-y-6">
@@ -23,16 +31,14 @@ export default function Menu() {
       ) : (
         <>
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-            <div role="tablist" aria-label="Day" className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-stone-200 bg-white p-1 dark:border-stone-800 dark:bg-stone-900">
+            <div role="tablist" aria-label="Day" className="flex max-w-full gap-2 overflow-x-auto pb-1">
               {menu.map((m) => (
                 <button
                   key={m.day}
                   role="tab"
                   aria-selected={m.day === selected.day}
                   onClick={() => setDay(m.day)}
-                  className={`rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition focus-visible:outline-2 focus-visible:outline-orange-500 ${
-                    m.day === selected.day ? 'bg-orange-600 text-white shadow-sm' : 'text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800'
-                  }`}
+                  className="chip"
                 >
                   {m.day.slice(0, 3)}
                 </button>
@@ -40,7 +46,7 @@ export default function Menu() {
             </div>
             <div role="group" aria-label="Diet" className="flex gap-2">
               {[['veg', '🥬 Veg'], ['nonveg', '🍗 Non-veg']].map(([v, label]) => (
-                <button key={v} aria-pressed={diet === v} onClick={() => setDiet(v)} className={`${diet === v ? 'btn-primary' : 'btn-ghost'} px-4 py-2`}>
+                <button key={v} aria-pressed={diet === v} onClick={() => setDiet(v)} className="chip">
                   {label}
                 </button>
               ))}

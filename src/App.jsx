@@ -51,7 +51,7 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-24 sm:px-6">
+      <main className="mx-auto min-h-[55vh] max-w-6xl px-4 pb-24 sm:px-6">
         {status === 'error' ? (
           <div className="card mt-10 text-center">
             <p>Could not load plans and menu.</p>
