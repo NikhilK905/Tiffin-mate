@@ -6,7 +6,7 @@ import { images } from '../lib/images';
 import { pickDish, todayName } from '../lib/menu';
 
 const tints = ['bg-orange-100', 'bg-green-100', 'bg-turmeric-100', 'bg-orange-200'];
-const colleges = ['IIT Delhi', 'DTU', 'Delhi University', 'NSUT', 'Jamia Millia', 'IIIT Delhi', 'Amity'];
+const areas = ['North Campus', 'South Campus', 'Kamla Nagar', 'Mukherjee Nagar', 'Hauz Khas', 'Laxmi Nagar', 'Rohini'];
 
 const steps = [
   ['📝', 'Pick a plan', 'Veg or non-veg, lunch only or both meals. Billed monthly, cancel anytime.'],
@@ -30,7 +30,7 @@ const testimonials = [
 const faqs = [
   ['Can I skip a day?', 'Yes. Skip from your dashboard and the day is added to the end of your month.'],
   ['How do I cancel?', 'Cancel any time from your dashboard; you are not billed for the next month.'],
-  ['Where do you deliver?', 'Hostels and PGs near our partner campuses, at the gate by 1 pm and 8 pm.'],
+  ['Where do you deliver?', 'Hostels and PGs in our delivery areas, at the gate by 1 pm and 8 pm.'],
 ];
 
 function TodayStrip({ menu }) {
@@ -82,9 +82,9 @@ export default function Home() {
             <Link to="/menu" className="btn-ghost px-7 py-3 text-base">View menu</Link>
           </div>
           <div className="mt-7">
-            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Trusted by students at</p>
+            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Delivering near</p>
             <ul className="mt-2 flex flex-wrap gap-2">
-              {colleges.map((c) => <li key={c} className="rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-medium text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300">{c}</li>)}
+              {areas.map((c) => <li key={c} className="rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-medium text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300">{c}</li>)}
             </ul>
           </div>
         </div>

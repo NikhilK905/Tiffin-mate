@@ -9,7 +9,7 @@ const empty = { name: '', email: '', subject: 'General', message: '' };
 const faqs = [
   ['Can I skip a day?', 'Yes. Skip from your dashboard and the day is added to the end of your month.'],
   ['How do I cancel?', 'Cancel any time from your dashboard; you are not billed for the next month.'],
-  ['Where do you deliver?', 'Hostels and PGs near our partner campuses, at the gate by 1 pm and 8 pm.'],
+  ['Where do you deliver?', 'Hostels and PGs in our delivery areas, at the gate by 1 pm and 8 pm.'],
   ['Is the food really home-made?', 'Yes, every meal comes from a local home kitchen.'],
 ];
 

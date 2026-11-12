@@ -81,7 +81,7 @@ export default function Auth({ mode }) {
         {isRegister && (
           <label className="label">
             College / hostel <span className="text-stone-400">(optional)</span>
-            <input className="input" value={form.college} onChange={set('college')} placeholder="e.g. IIT Delhi, Kumaon Hostel" />
+            <input className="input" value={form.college} onChange={set('college')} placeholder="e.g. Sample Hostel, Block B" />
           </label>
         )}
         <button className="btn-primary w-full" disabled={busy}>

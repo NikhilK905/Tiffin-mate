@@ -1,7 +1,7 @@
 import Photo from '../components/Photo';
 import { images } from '../lib/images';
 
-const stats = [['2,000+', 'students fed'], ['12', 'colleges'], ['40+', 'home cooks'], ['4.8★', 'average rating']];
+const stats = [['2,000+', 'students fed'], ['12', 'areas served'], ['40+', 'home cooks'], ['4.8★', 'average rating']];
 const kitchens = [
   ['Local home kitchens', 'We partner with home cooks near campus who prepare small batches every morning and evening.'],
   ['Packed and tracked', 'Meals are packed in steel tiffins, labelled by plan, and sent out in one delivery round.'],
