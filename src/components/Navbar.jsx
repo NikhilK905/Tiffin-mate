@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -5,40 +6,63 @@ import { logout, selectUser } from '../store/authSlice';
 import { useTheme } from '../context/ThemeContext';
 
 const linkClass = ({ isActive }) =>
-  `text-sm font-medium transition hover:text-orange-600 ${isActive ? 'text-orange-600' : 'text-stone-600 dark:text-stone-300'}`;
+  `block py-2 text-sm font-medium transition hover:text-orange-600 md:py-0 ${isActive ? 'text-orange-600' : 'text-stone-600 dark:text-stone-300'}`;
 
 export default function Navbar() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const links = [
+    ['/plans', 'Plans'],
+    ['/menu', 'Menu'],
+    ['/about', 'About'],
+    ['/contact', 'Contact'],
+    ...(user?.role === 'admin' ? [['/admin', 'Admin']] : user ? [['/dashboard', 'My tiffin']] : []),
+  ];
 
   const onLogout = () => {
     dispatch(logout());
+    setOpen(false);
     toast.info('Logged out');
     navigate('/');
   };
 
   return (
-    <header className="sticky top-0 z-10 border-b border-stone-200 bg-stone-50/80 backdrop-blur dark:border-stone-800 dark:bg-stone-950/80">
-      <nav className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:gap-6 sm:px-6">
-        <Link to="/" className="mr-auto font-display text-xl font-bold">
+    <header className="sticky top-0 z-10 border-b border-stone-200 bg-stone-50/90 backdrop-blur dark:border-stone-800 dark:bg-stone-950/90">
+      <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
+        <Link to="/" onClick={() => setOpen(false)} className="mr-auto font-display text-xl font-bold">
           🍱 Dabba<span className="text-orange-600">Dost</span>
         </Link>
-        <NavLink to="/menu" className={linkClass}>Menu</NavLink>
-        {user && <NavLink to="/dashboard" className={linkClass}>My tiffin</NavLink>}
         <button
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          className="rounded-full p-2 hover:bg-stone-200 dark:hover:bg-stone-800"
+          className="rounded-full p-2 hover:bg-stone-200 md:order-last dark:hover:bg-stone-800"
         >
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
-        {user ? (
-          <button onClick={onLogout} className="btn-ghost px-4 py-2">Log out</button>
-        ) : (
-          <Link to="/login" className="btn-primary px-4 py-2">Log in</Link>
-        )}
+        <button
+          onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          aria-label="Menu"
+          className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm md:hidden dark:border-stone-700"
+        >
+          {open ? '✕' : '☰'}
+        </button>
+        <div className={`${open ? 'flex' : 'hidden'} w-full flex-col md:flex md:w-auto md:flex-row md:items-center md:gap-6`}>
+          {links.map(([to, label]) => (
+            <NavLink key={to} to={to} onClick={() => setOpen(false)} className={linkClass}>
+              {label}
+            </NavLink>
+          ))}
+          {user ? (
+            <button onClick={onLogout} className="btn-ghost mt-2 px-4 py-2 md:mt-0">Log out</button>
+          ) : (
+            <Link to="/login" onClick={() => setOpen(false)} className="btn-primary mt-2 px-4 py-2 md:mt-0">Log in</Link>
+          )}
+        </div>
       </nav>
     </header>
   );
