@@ -18,6 +18,9 @@ import Menu from './pages/Menu';
 import Auth from './pages/Auth';
 import Subscribe from './pages/Subscribe';
 import Dashboard from './pages/Dashboard';
+import Billing from './pages/Billing';
+import Profile from './pages/Profile';
+import Notifications from './pages/Notifications';
 
 function NotFound() {
   return (
@@ -70,6 +73,9 @@ export default function App() {
             <Route path="/register" element={<Auth mode="register" />} />
             <Route path="/subscribe/:planId" element={<RequireAuth><Subscribe /></RequireAuth>} />
             <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+            <Route path="/billing" element={<RequireAuth><Billing /></RequireAuth>} />
+            <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+            <Route path="/notifications" element={<RequireAuth><Notifications /></RequireAuth>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         )}

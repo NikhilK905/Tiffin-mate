@@ -4,6 +4,7 @@ import { Link, NavLink, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { logout, selectIsAdmin, selectUser } from '../store/authSlice';
 import { useTheme } from '../context/ThemeContext';
+import NotificationBell from './NotificationBell';
 
 const linkClass = ({ isActive }) =>
   `block border-b-2 py-2 text-sm font-medium transition hover:text-orange-600 md:py-1 ${
@@ -39,7 +40,7 @@ export default function Navbar() {
         <Link to="/" onClick={() => setOpen(false)} className="mr-auto font-display text-xl font-bold">
           🍱 Dabba<span className="text-orange-600">Dost</span>
         </Link>
-        {/* NotificationBell */}
+        {user && !isAdmin && <NotificationBell />}
         <button
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
@@ -63,12 +64,12 @@ export default function Navbar() {
           ))}
           {user ? (
             <div className="mt-2 flex items-center gap-3 md:mt-0">
-              <span className="flex items-center gap-2 text-sm font-medium">
+              <Link to={isAdmin ? '/admin' : '/profile'} onClick={() => setOpen(false)} title="My profile" className="flex items-center gap-2 text-sm font-medium hover:text-orange-600">
                 <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 font-bold text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
                   {user.name[0].toUpperCase()}
                 </span>
                 {user.name.split(' ')[0]}
-              </span>
+              </Link>
               <button onClick={onLogout} className="btn-ghost px-4 py-2">Log out</button>
             </div>
           ) : (
