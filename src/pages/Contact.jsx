@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { addMessage } from '../store/messagesSlice';
 
-const empty = { name: '', email: '', message: '' };
+const SUBJECTS = ['Delivery issue', 'Billing', 'Food quality', 'General'];
+const empty = { name: '', email: '', subject: 'General', message: '' };
 
 const faqs = [
   ['Can I skip a day?', 'Yes. Skip from your dashboard and the day is added to the end of your month.'],
@@ -19,6 +22,7 @@ function validate({ name, email, message }) {
 }
 
 export default function Contact() {
+  const dispatch = useDispatch();
   const [form, setForm] = useState(empty);
   const [errors, setErrors] = useState({});
 
@@ -29,48 +33,55 @@ export default function Contact() {
     const found = validate(form);
     setErrors(found);
     if (Object.keys(found).length) return;
-    try {
-      const saved = JSON.parse(localStorage.getItem('tiffin-messages')) || [];
-      localStorage.setItem('tiffin-messages', JSON.stringify([...saved, { ...form, sentAt: new Date().toISOString() }]));
-    } catch {
-      // storage unavailable or corrupt; the toast still confirms the submit
-    }
+    dispatch(addMessage({ ...form, email: form.email.trim().toLowerCase() }));
     toast.success('Message sent! We will get back to you soon.');
     setForm(empty);
   };
 
+  const err = (key) => errors[key] && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors[key]}</p>;
+
   return (
-    <>
-      <h1 className="font-display text-4xl font-bold">Contact us</h1>
+    <section className="py-12">
+      <h1 className="section-title">Contact us</h1>
+      <p className="muted mt-2">Questions, feedback or a problem with your tiffin? We reply within a day.</p>
       <div className="mt-8 grid gap-8 md:grid-cols-2">
         <form onSubmit={submit} noValidate className="card space-y-4">
-          {[['name', 'Name', 'text'], ['email', 'Email', 'email']].map(([key, label, type]) => (
-            <div key={key}>
-              <label htmlFor={key} className="label">{label}</label>
-              <input id={key} name={key} type={type} className="input" value={form[key]} onChange={change} />
-              {errors[key] && <p className="mt-1 text-sm text-red-600">{errors[key]}</p>}
-            </div>
-          ))}
+          <div>
+            <label htmlFor="name" className="label">Name</label>
+            <input id="name" name="name" className="input" value={form.name} onChange={change} aria-invalid={!!errors.name} />
+            {err('name')}
+          </div>
+          <div>
+            <label htmlFor="email" className="label">Email</label>
+            <input id="email" name="email" type="email" className="input" value={form.email} onChange={change} aria-invalid={!!errors.email} />
+            {err('email')}
+          </div>
+          <div>
+            <label htmlFor="subject" className="label">Subject</label>
+            <select id="subject" name="subject" className="input" value={form.subject} onChange={change}>
+              {SUBJECTS.map((s) => <option key={s}>{s}</option>)}
+            </select>
+          </div>
           <div>
             <label htmlFor="message" className="label">Message</label>
-            <textarea id="message" name="message" rows={5} className="input" value={form.message} onChange={change} />
-            {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
+            <textarea id="message" name="message" rows={5} className="input" value={form.message} onChange={change} aria-invalid={!!errors.message} />
+            {err('message')}
           </div>
-          <button type="submit" className="btn-primary">Send message</button>
+          <button type="submit" className="btn-primary w-full">Send message</button>
         </form>
 
-        <section>
+        <div>
           <h2 className="font-display text-2xl font-bold">FAQ</h2>
           <div className="mt-4 space-y-3">
             {faqs.map(([q, a]) => (
               <details key={q} className="card py-4">
                 <summary className="cursor-pointer font-medium">{q}</summary>
-                <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">{a}</p>
+                <p className="muted mt-2 text-sm">{a}</p>
               </details>
             ))}
           </div>
-        </section>
+        </div>
       </div>
-    </>
+    </section>
   );
 }
