@@ -7,9 +7,9 @@ function initialTheme() {
     const saved = localStorage.getItem('tiffin-theme');
     if (saved) return saved;
   } catch {
-    // fall through to system preference
+    // fall through to the default
   }
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light'; // light-first: the system preference is ignored until the user toggles
 }
 
 export function ThemeProvider({ children }) {
