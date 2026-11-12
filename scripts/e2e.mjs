@@ -53,8 +53,8 @@ const step = async (name, fn) => {
 // helpers injected into the page
 const H = `
 const setVal=(el,v)=>{const p=Object.getPrototypeOf(el);Object.getOwnPropertyDescriptor(p,'value').set.call(el,v);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));};
-const byLabel=(t)=>[...document.querySelectorAll('label')].find(l=>l.textContent.trim().startsWith(t))?.control;
-const btn=(t)=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t);
+const byLabel=(t)=>[...document.querySelectorAll('label')].find(l=>l.textContent.trim().replace(/^[^A-Za-z]+/,'').startsWith(t))?.control;
+const btn=(t)=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim().replace(/^[^A-Za-z]+/,'')===t);
 const btnStarts=(t)=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim().startsWith(t));
 const toast=()=>[...document.querySelectorAll('[role=alert]')].map(t=>t.textContent).join(' | ');
 const wait=(ms)=>new Promise(r=>setTimeout(r,ms));
@@ -141,8 +141,8 @@ await step('2', async () => {
   await go('/plans');
   const s = await js(`${H}
     const cards=()=>document.querySelectorAll('article').length;
-    const all=cards(); btn('🥬 Veg').click(); await wait(200); const veg=cards(); const vegTxt=[...document.querySelectorAll('article')].every(a=>a.textContent.includes('Veg')&&!a.textContent.includes('Non-veg'));
-    btn('🍗 Non-veg').click(); await wait(200); const nv=cards(); const nvTxt=[...document.querySelectorAll('article')].every(a=>a.textContent.includes('Non-veg'));
+    const all=cards(); btn('Veg').click(); await wait(200); const veg=cards(); const vegTxt=[...document.querySelectorAll('article')].every(a=>a.textContent.includes('Veg')&&!a.textContent.includes('Non-veg'));
+    btn('Non-veg').click(); await wait(200); const nv=cards(); const nvTxt=[...document.querySelectorAll('article')].every(a=>a.textContent.includes('Non-veg'));
     btn('All').click(); await wait(200);
     return {all, veg, nv, vegTxt, nvTxt, table:document.querySelectorAll('table tbody tr').length}`);
   check('2 plans filter: veg/non-veg/all change the cards', s.veg > 0 && s.nv > 0 && s.veg < s.all && s.nv < s.all && s.veg + s.nv === s.all && s.vegTxt && s.nvTxt, JSON.stringify(s));
@@ -153,7 +153,7 @@ await step('2', async () => {
     const tabs=[...document.querySelectorAll('[role=tab]')]; const head=()=>document.querySelector('[role=tabpanel] h2').textContent;
     const before=head(); const other=tabs.find(t=>t.getAttribute('aria-selected')==='false'); other.click(); await wait(200); const after=head();
     const week=()=>document.querySelector('section').innerText;
-    const vegBtn=btn('🥬 Veg'); const nvBtn=btn('🍗 Non-veg'); const vegPressed=vegBtn.getAttribute('aria-pressed');
+    const vegBtn=btn('Veg'); const nvBtn=btn('Non-veg'); const vegPressed=vegBtn.getAttribute('aria-pressed');
     const w1=week(); nvBtn.click(); await wait(200); const w2=week();
     return {tabs:tabs.length, before, after, vegPressed, nvPressed:nvBtn.getAttribute('aria-pressed'), toggled:w1!==w2}`);
   check('2 menu day tabs switch the day', m.tabs === 7 && m.before !== m.after, `${m.before} → ${m.after}`);
@@ -188,7 +188,7 @@ await step('3', async () => {
   check('3 coupon BAD → error toast, no discount', /invalid coupon/i.test(s.bad) && !/Coupon/.test(s.afterBad), s.bad);
   check('3 coupon STUDENT10 → applied toast', s.good.includes('Coupon STUDENT10 applied'), s.good);
   const nums = s.rows.map(([k, v]) => [k, Number(v.replace(/[^0-9]/g, ''))]);
-  const total = nums.find(([k]) => k === 'Total')?.[1];
+  const total = nums.find(([k]) => k.startsWith('Total'))?.[1];
   const sub = planPrice + 299 + 199;
   const expected = sub - Math.round(sub * 0.1);
   check('3 summary total = plan + add-ons − 10%', total === expected, `plan ${planPrice} + 299 + 199 − 10% = ${expected}; page shows ${total}; rows ${JSON.stringify(s.rows)}`);
@@ -202,29 +202,29 @@ await step('3', async () => {
 await step('4', async () => {
   await go('/dashboard');
   let s = await js(`${H} return text()`);
-  check('4 dashboard: plan, Active badge, 30 delivery days left', s.includes('Ghar Ka Khana') && /Active/.test(s) && /30\s*delivery days left/.test(s));
-  check("4 today's order card shows Lunch and (for 2-meal plan) Dinner; starts tomorrow", /Today's order/.test(s) && /Lunch/i.test(s) && /Starts on/.test(s));
+  check('4 dashboard: plan, Active badge, 30 delivery days left', s.includes('Ghar Ka Khana') && /Active/.test(s) && /Meals left\s*30/.test(s));
+  check("4 today's order card shows Lunch and (for 2-meal plan) Dinner; starts tomorrow", /Today's tracking/.test(s) && /Lunch/i.test(s) && /Starts on/.test(s));
   check('4 stats cards: Meals left / Meals eaten / Days skipped / Saved vs canteen', ['Meals left', 'Meals eaten', 'Days skipped', 'Saved vs canteen'].every((k) => s.includes(k)));
 
   s = await js(`${H}
-    const range=()=>[...document.querySelectorAll('p')].find(p=>p.textContent.includes('delivering to')).textContent.split(' · ')[0];
+    const range=()=>[...document.querySelectorAll('span')].find(p=>/\d{4}|[A-Z][a-z]{2} – /.test(p.textContent)&&p.textContent.includes(' – ')&&p.textContent.includes(' · ')).textContent.split(' · ')[0];
     const b=[...document.querySelectorAll('li button')].find(b=>!b.disabled);
     const before=range(); b.click(); await wait(400); const t1=toast(); const mid=range(); const left1=text(); const pressed=b.getAttribute('aria-pressed');
     await dismissToasts();
     b.click(); await wait(400); const t2=toast(); const back=range();
-    return {before, mid, back, t1, t2, pressed, left30:/30\\s*delivery days left/.test(left1), skippedStat:left1.includes('Days skipped')}`);
+    return {before, mid, back, t1, t2, pressed, left30:/Meals left\\s*30/.test(left1), skippedStat:left1.includes('Days skipped')}`);
   check('4 skip: toast, end date +1, days left stays 30', s.t1.includes('skipped') && s.before !== s.mid && s.left30 && s.pressed === 'true', `${s.before} → ${s.mid}; ${s.t1}`);
   check('4 un-skip: toast, end date restored', s.t2.includes('back on') && s.back === s.before, `${s.mid} → ${s.back}; ${s.t2}`);
 
   s = await js(`${H}
-    btn('Pause deliveries').click(); await wait(300); const paused=/Paused/.test(text()); const locked=[...document.querySelectorAll('li button')].every(b=>b.disabled); const lbl=text().includes("Paused");
-    btn('Resume deliveries').click(); await wait(300); const active=/Active/.test(text())&&!!btn('Pause deliveries');
+    btn('Pause').click(); await wait(300); const paused=/Paused/.test(text()); const locked=[...document.querySelectorAll('li button')].every(b=>b.disabled); const lbl=text().includes("Paused");
+    btn('Resume').click(); await wait(300); const active=/Active/.test(text())&&!!btn('Pause');
     return {paused, locked, active, lbl}`);
   check('4 pause → Paused badge + calendar locked; resume → Active', s.paused && s.locked && s.active, JSON.stringify(s));
 
   await go('/dashboard');
   s = await js(`${H} return text()`);
-  check('4 dashboard persists after reload', s.includes('Ghar Ka Khana') && /Active/.test(s) && /30\s*delivery days left/.test(s));
+  check('4 dashboard persists after reload', s.includes('Ghar Ka Khana') && /Active/.test(s) && /Meals left\s*30/.test(s));
 });
 
 // ===== 5. billing =====
@@ -232,7 +232,7 @@ await step('5', async () => {
   await go('/billing');
   let s = await js(`${H}
     const row=()=>document.querySelector('tbody tr').innerText; const renew=btn('Renew for next month');
-    const before=row(); const renewDisabled=renew.disabled; const note=text().includes('Your plan runs till');
+    const before=row(); const renewDisabled=renew.disabled; const note=/opens\\s+\\d/i.test(text())&&/runs till/i.test(text());
     btn('Mark as paid').click(); await wait(400); const t=toast(); const after=row(); const stillBtn=!!btn('Mark as paid');
     btn('View invoice').click(); await wait(300); const dlg=document.querySelector('[role=dialog]'); const inv=dlg?.innerText ?? '';
     btn('Close').click(); await wait(200);
@@ -240,7 +240,7 @@ await step('5', async () => {
   check('5 payment shows as Due (cash)', /Due/.test(s.before) && /Cash/.test(s.before), s.before.replace(/\s+/g, ' '));
   check('5 Renew disabled (>7 days left) with explanation', s.renewDisabled && s.note);
   check('5 Mark as paid works: toast, row Paid, button gone', s.t.includes('Marked as paid') && /Paid/.test(s.after) && !s.stillBtn, `${s.t}; ${s.after.replace(/\s+/g, ' ')}`);
-  check('5 invoice opens with total and closes', s.inv.includes('DabbaDost invoice') && s.inv.includes('Test Student') && s.closed, s.inv.replace(/\s+/g, ' ').slice(0, 120));
+  check('5 invoice opens with total and closes', s.inv.includes('DabbaDost') && /receipt/i.test(s.inv) && s.inv.includes('Test Student') && s.inv.includes('3,597') && s.closed, s.inv.replace(/\s+/g, ' ').slice(0, 120));
 });
 
 // ===== 6. rating (seed a subscription that started 3 days ago) =====
@@ -257,7 +257,7 @@ await step('6', async () => {
     setVal(first.querySelector('input[aria-label=Comment]'),'Tasty dal'); [...first.querySelectorAll('button')].find(b=>b.textContent==='Submit').click(); await wait(400);
     const t=toast(); const label=[...first.querySelectorAll('button')].find(b=>['Submit','Update'].includes(b.textContent))?.textContent;
     const stage=/Scheduled|Preparing|Out for delivery|Delivered/.test(text());
-    const eaten=(stats.match(/(\\d+)\\s*Meals eaten/)||[])[1];
+    const eaten=(stats.match(/Meals eaten\\s*(\\d+)/)||[])[1];
     return {n, t, label, stage, eaten, stored:JSON.parse(localStorage.getItem('tiffin-state')).feedback.items.length, delivering:/Starts on/.test(text())}`);
   check('6 seeded day 4: three past days × meals offered for rating', s.n >= 3, `${s.n} rows`);
   check('6 rate a meal: toast, button becomes Update, stored', s.t.includes('Thanks for the feedback') && s.label === 'Update' && s.stored === 1, `${s.t}; ${s.label}; stored ${s.stored}`);
@@ -281,7 +281,7 @@ await step('7', async () => {
   s = await login('admin@dabbadost.in', 'admin123');
   check('7 admin login lands on /admin', s.path === '/admin', s.path);
 
-  const tab = (name) => js(`${H} [...document.querySelectorAll('[role=tab]')].find(t=>t.textContent.trim()===${JSON.stringify(name)}).click(); await wait(300); return text()`);
+  const tab = (name) => js(`${H} [...document.querySelectorAll('[role=tab]')].find(t=>t.textContent.includes(${JSON.stringify(name)})).click(); await wait(300); return text()`);
   s = await tab('Support inbox');
   check('7 inbox lists the Billing ticket', s.includes('Billing') && s.includes('I paid cash') && s.includes('Open (1)'));
   s = await js(`${H} setVal(byLabel('Reply'),'Marked as paid, thanks!'); btn('Send reply').click(); await wait(400); return {t:toast(), txt:text()}`);
@@ -303,7 +303,7 @@ await step('7', async () => {
   check('7 subscribers search finds by email, empty for a miss', s.hit === 1 && s.hitTxt && s.miss, JSON.stringify(s));
 
   s = await tab('Feedback');
-  check('7 feedback shows the 4★ rating with comment and student', s.includes('Tasty dal') && s.includes('Test Student') && /4\.0 ★/.test(s));
+  check('7 feedback shows the 4★ rating with comment and student', s.includes('Tasty dal') && s.includes('Test Student') && /4\.0/.test(s));
 });
 
 // ===== 8. student: bell + ticket reply =====
@@ -324,7 +324,7 @@ await step('8', async () => {
   check('8 /notifications lists the announcement', s.includes('Holiday on Friday'));
   await go('/profile');
   s = await js(`${H} return text()`);
-  check('8 profile shows the ticket with admin reply', s.includes('Billing') && s.includes('Admin: Marked as paid, thanks!') && /resolved/i.test(s));
+  check('8 profile shows the ticket with admin reply', s.includes('Billing') && s.includes('Admin reply') && s.includes('Marked as paid, thanks!') && /resolved/i.test(s));
 });
 
 // ===== 9. screenshots (light, 1280 + 390) and dark =====
@@ -350,7 +350,7 @@ await step('9', async () => {
   }
   await viewport(390);
   await go('/admin');
-  await js(`${H} [...document.querySelectorAll('[role=tab]')].find(x=>x.textContent.trim()==='Subscribers').click(); await wait(300);`);
+  await js(`${H} [...document.querySelectorAll('[role=tab]')].find(x=>x.textContent.includes('Subscribers')).click(); await wait(300);`);
   const t = await js(`const c=(()=>{for(let a=document.querySelector('table').parentElement;a;a=a.parentElement){if(/auto|scroll/.test(getComputedStyle(a).overflowX))return a}})(); return {inCard:!!c, scrolls:c&&c.scrollWidth>c.clientWidth, page:document.documentElement.scrollWidth<=document.documentElement.clientWidth}`);
   check('9 admin table scrolls inside its card at 390px', t.inCard && t.scrolls && t.page, JSON.stringify(t));
   await viewport(1280);
