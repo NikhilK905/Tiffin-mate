@@ -7,6 +7,19 @@ const steps = [
   ['Skip when you are away', 'Going home for the weekend? Skip a day and it gets added to the end of your month.'],
 ];
 
+const features = [
+  ['💸', 'Pocket-friendly', 'Cheaper per meal than most canteens.'],
+  ['🍲', 'Home-style taste', 'Cooked fresh by local home kitchens.'],
+  ['🚪', 'At your gate', 'Delivered to your hostel or PG on time.'],
+  ['⏸️', 'Flexible', 'Skip days when you travel; cancel anytime.'],
+];
+
+const testimonials = [
+  ['Aarav', 'Tastes like mom’s cooking, and I never have to queue at the mess again.'],
+  ['Meera', 'The skip feature is great for weekends when I go home.'],
+  ['Kabir', 'The Protein Pack keeps me going through gym season.'],
+];
+
 export default function Home() {
   const { plans, status } = useSelector((s) => s.catalog);
 
@@ -45,6 +58,31 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="mt-20">
+        <h2 className="font-display text-3xl font-bold">Why students love us</h2>
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map(([icon, title, body]) => (
+            <div key={title} className="card">
+              <span className="text-3xl" aria-hidden="true">{icon}</span>
+              <h3 className="mt-2 font-semibold">{title}</h3>
+              <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-20">
+        <h2 className="font-display text-3xl font-bold">What students say</h2>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {testimonials.map(([name, quote]) => (
+            <figure key={name} className="card">
+              <blockquote className="text-sm text-stone-700 dark:text-stone-300">“{quote}”</blockquote>
+              <figcaption className="mt-3 text-sm font-semibold">{name} <span className="font-normal text-stone-500">· fictional student</span></figcaption>
+            </figure>
+          ))}
+        </div>
       </section>
     </>
   );

@@ -1,13 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
-import auth from './authSlice';
+import auth, { ADMIN } from './authSlice';
 import subscription from './subscriptionSlice';
-import catalog from './catalogSlice';
+import catalog, { initialState as catalogInitial } from './catalogSlice';
 
 const KEY = 'tiffin-state';
 
 function load() {
   try {
-    return JSON.parse(localStorage.getItem(KEY)) ?? undefined;
+    const saved = JSON.parse(localStorage.getItem(KEY));
+    if (!saved) return undefined;
+    // Saved auth may predate the seeded admin, so always put it back.
+    return {
+      ...saved,
+      auth: { ...saved.auth, users: { ...saved.auth.users, [ADMIN.email]: ADMIN } },
+      catalog: { ...catalogInitial, overrides: saved.catalog?.overrides ?? {} },
+    };
   } catch {
     return undefined;
   }
@@ -18,11 +25,11 @@ export const store = configureStore({
   preloadedState: load(),
 });
 
-// Catalog is refetched each visit, so only user data is persisted.
+// Plans and menu are refetched each visit; only admin overrides are persisted for the catalog.
 store.subscribe(() => {
-  const { auth, subscription } = store.getState();
+  const { auth, subscription, catalog } = store.getState();
   try {
-    localStorage.setItem(KEY, JSON.stringify({ auth, subscription }));
+    localStorage.setItem(KEY, JSON.stringify({ auth, subscription, catalog: { overrides: catalog.overrides } }));
   } catch {
     // storage full or blocked: keep running in memory
   }
