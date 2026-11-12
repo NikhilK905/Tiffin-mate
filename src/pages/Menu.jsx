@@ -150,21 +150,26 @@ export default function Menu() {
                       <span className="hidden sm:inline">{m.day}</span>
                       {m.day === today && <span className="badge-brand mt-1 block w-fit">Today</span>}
                     </th>
-                    {[m.lunch, m.dinner].map((meal, i) => (
-                      <td key={i} className="px-3 py-3 align-top sm:px-4">
-                        <span title={hasNonVegOption(meal) ? 'Has a non-veg option' : 'Veg only'} className="mr-1">
-                          <span aria-hidden="true">{hasNonVegOption(meal) ? '🍗' : '🥬'}</span>
-                          <span className="sr-only">{hasNonVegOption(meal) ? 'Has a non-veg option: ' : 'Veg only: '}</span>
-                        </span>
-                        {pickDish(meal, diet)}
-                      </td>
-                    ))}
+                    {[m.lunch, m.dinner].map((meal, i) => {
+                      // The marker describes the dish shown: non-veg only when the non-veg pick is on screen.
+                      const nonVeg = diet === 'nonveg' && hasNonVegOption(meal);
+                      return (
+                        <td key={i} className="px-3 py-3 align-top sm:px-4">
+                          <span title={nonVeg ? 'Non-veg' : 'Veg'} className="mr-1">
+                            <span aria-hidden="true">{nonVeg ? '🍗' : '🥬'}</span>
+                            <span className="sr-only">{nonVeg ? 'Non-veg: ' : 'Veg: '}</span>
+                          </span>
+                          {pickDish(meal, diet)}
+                          {diet === 'veg' && hasNonVegOption(meal) && <span className="muted ml-1 text-xs">(non-veg option available)</span>}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="muted mt-3 text-xs">🥬 veg only · 🍗 has a non-veg option</p>
+          <p className="muted mt-3 text-xs">🥬 veg · 🍗 non-veg. Switch the toggle above to see the non-veg picks.</p>
         </>
       )}
     </section>
