@@ -34,7 +34,7 @@ export default function Dashboard() {
       <section className="card mx-auto mt-12 max-w-md text-center">
         <h1 className="font-display text-2xl font-bold">Hi {user.name.split(' ')[0]} 👋</h1>
         <p className="mt-2 text-stone-600 dark:text-stone-400">You don't have an active tiffin plan.</p>
-        <Link to="/#plans" className="btn-primary mt-6">Browse plans</Link>
+        <Link to="/plans" className="btn-primary mt-6">Browse plans</Link>
       </section>
     );
   }

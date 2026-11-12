@@ -10,7 +10,7 @@ export default function Auth({ mode }) {
   const [busy, setBusy] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const from = useLocation().state?.from ?? '/dashboard';
+  const from = useLocation().state?.from;
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
@@ -20,7 +20,7 @@ export default function Auth({ mode }) {
     try {
       const user = await dispatch(isRegister ? register(form) : login(form)).unwrap();
       toast.success(`Welcome${isRegister ? '' : ' back'}, ${user.name.split(' ')[0]}!`);
-      navigate(from, { replace: true });
+      navigate(from ?? (user.role === 'admin' ? '/admin' : '/dashboard'), { replace: true });
     } catch (err) {
       toast.error(typeof err === 'string' ? err : 'Something went wrong, please try again');
       setBusy(false);

@@ -6,7 +6,13 @@ import { fetchCatalog } from './store/catalogSlice';
 import { selectUser } from './store/authSlice';
 import { useTheme } from './context/ThemeContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import RequireAdmin from './components/RequireAdmin';
 import Home from './pages/Home';
+import Plans from './pages/Plans';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import Admin from './pages/Admin';
 import Menu from './pages/Menu';
 import Auth from './pages/Auth';
 import Subscribe from './pages/Subscribe';
@@ -41,7 +47,11 @@ export default function App() {
         ) : (
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/plans" element={<Plans />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
             <Route path="/login" element={<Auth mode="login" />} />
             <Route path="/register" element={<Auth mode="register" />} />
             <Route path="/subscribe/:planId" element={<RequireAuth><Subscribe /></RequireAuth>} />
@@ -50,6 +60,7 @@ export default function App() {
           </Routes>
         )}
       </main>
+      <Footer />
       <ToastContainer position="bottom-right" autoClose={2500} theme={theme} />
     </>
   );

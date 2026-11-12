@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { logout, selectUser } from '../store/authSlice';
+import { logout, selectIsAdmin, selectUser } from '../store/authSlice';
 import { useTheme } from '../context/ThemeContext';
 
 const linkClass = ({ isActive }) =>
@@ -10,6 +10,7 @@ const linkClass = ({ isActive }) =>
 
 export default function Navbar() {
   const user = useSelector(selectUser);
+  const isAdmin = useSelector(selectIsAdmin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
@@ -20,7 +21,7 @@ export default function Navbar() {
     ['/menu', 'Menu'],
     ['/about', 'About'],
     ['/contact', 'Contact'],
-    ...(user?.role === 'admin' ? [['/admin', 'Admin']] : user ? [['/dashboard', 'My tiffin']] : []),
+    ...(isAdmin ? [['/admin', 'Admin']] : user ? [['/dashboard', 'My tiffin']] : []),
   ];
 
   const onLogout = () => {
