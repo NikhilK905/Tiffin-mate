@@ -20,7 +20,8 @@ export default function Auth({ mode }) {
     try {
       const user = await dispatch(isRegister ? register(form) : login(form)).unwrap();
       toast.success(`Welcome${isRegister ? '' : ' back'}, ${user.name.split(' ')[0]}!`);
-      navigate(from ?? (user.role === 'admin' ? '/admin' : '/dashboard'), { replace: true });
+      // `from` can be a student page left over from someone else's logout, so admins always go to /admin.
+      navigate(user.role === 'admin' ? '/admin' : (from ?? '/dashboard'), { replace: true });
     } catch (err) {
       toast.error(typeof err === 'string' ? err : 'Something went wrong, please try again');
       setBusy(false);
