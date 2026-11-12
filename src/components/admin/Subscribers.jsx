@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { setSubscription } from '../../store/subscriptionSlice';
 import { mealsLeft, pause, resume, todayISO } from '../../lib/subscription';
-import { Badge, Th, fmt, students } from './shared';
+import { Badge, Empty, PageHead, TableCard, Td, fmt, students } from './shared';
 
 export default function Subscribers() {
   const users = useSelector((s) => s.auth.users);
@@ -34,50 +34,52 @@ export default function Subscribers() {
     }
   };
 
+  const FILTERS = ['all', 'active', 'paused', 'cancelled', 'none'];
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-3">
+    <div>
+      <PageHead eyebrow="Subscribers" title="Every student" hint="Pause, resume or cancel on a student's behalf." />
+      <div className="mb-4 flex flex-wrap items-center gap-3">
         <input className="input mt-0 max-w-xs" placeholder="Search name or email" aria-label="Search" value={q} onChange={(e) => setQ(e.target.value)} />
-        <select className="input mt-0 max-w-40" aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)}>
-          {['all', 'active', 'paused', 'cancelled', 'none'].map((s) => (
-            <option key={s} value={s}>{s === 'none' ? 'No plan' : s[0].toUpperCase() + s.slice(1)}</option>
+        <div className="flex gap-2 overflow-x-auto">
+          {FILTERS.map((f) => (
+            <button key={f} className="chip capitalize" aria-pressed={status === f} onClick={() => setStatus(f)}>
+              {f === 'none' ? 'No plan' : f}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
-      <div className="card overflow-x-auto">
-        <table className="w-full min-w-[64rem] text-left text-sm">
-          <Th cols={['Student', 'Plan', 'Status', 'Start', 'End', 'Meals left', 'Address', 'Actions']} />
-          <tbody>
-            {rows.map((u) => {
-              const sub = subs[u.email];
-              return (
-                <tr key={u.email} className="border-b border-stone-100 last:border-0 dark:border-stone-800">
-                  <td className="px-3 py-2">
-                    <div className="font-medium">{u.name}</div>
-                    <div className="text-xs text-stone-500">{u.email}</div>
-                  </td>
-                  <td className="px-3 py-2">{sub ? (plans.find((p) => p.id === sub.planId)?.name ?? sub.planId) : '—'}</td>
-                  <td className="px-3 py-2">{sub ? <Badge status={sub.status} /> : <span className="text-stone-500">No plan</span>}</td>
-                  <td className="px-3 py-2">{sub ? fmt(sub.startDate) : '—'}</td>
-                  <td className="px-3 py-2">{sub ? fmt(sub.endDate) : '—'}</td>
-                  <td className="px-3 py-2">{sub ? mealsLeft(sub, today) : '—'}</td>
-                  <td className="px-3 py-2">{sub?.address ?? '—'}</td>
-                  <td className="px-3 py-2">
-                    <div className="flex gap-2">
-                      {sub?.status === 'active' && <button className="btn-ghost px-3 py-1.5" onClick={() => act(u, (s) => pause(s, today), 'Paused')}>Pause</button>}
-                      {sub?.status === 'paused' && <button className="btn-ghost px-3 py-1.5" onClick={() => act(u, (s) => resume(s, today), 'Resumed')}>Resume</button>}
-                      {sub && sub.status !== 'cancelled' && (
-                        <button className="btn-ghost px-3 py-1.5 text-red-600 dark:text-red-400" onClick={() => cancel(u)}>Cancel</button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-            {!rows.length && <tr><td colSpan={8} className="px-3 py-6 text-center text-stone-500">No students match.</td></tr>}
-          </tbody>
-        </table>
-      </div>
+      <TableCard
+        cols={['Student', 'Plan', 'Status', 'Start – end', 'Left', 'Address', 'Actions']}
+        min="50rem"
+        empty={!rows.length && <Empty icon="🔍" title="No students match" hint="Try a different search or filter." />}
+      >
+        {rows.map((u) => {
+          const sub = subs[u.email];
+          return (
+            <tr key={u.email}>
+              <Td>
+                <div className="font-medium">{u.name}</div>
+                <div className="muted text-xs">{u.email}</div>
+              </Td>
+              <Td>{sub ? (plans.find((p) => p.id === sub.planId)?.name ?? sub.planId) : '—'}</Td>
+              <Td>{sub ? <Badge status={sub.status} /> : <span className="muted">No plan</span>}</Td>
+              <Td className="whitespace-nowrap">{sub ? `${fmt(sub.startDate)} – ${fmt(sub.endDate)}` : '—'}</Td>
+              <Td>{sub ? mealsLeft(sub, today) : '—'}</Td>
+              <Td className="min-w-32 max-w-44">{sub?.address ?? '—'}</Td>
+              <Td>
+                <div className="flex gap-2">
+                  {sub?.status === 'active' && <button className="btn-ghost px-3 py-1" onClick={() => act(u, (s) => pause(s, today), 'Paused')}>Pause</button>}
+                  {sub?.status === 'paused' && <button className="btn-ghost px-3 py-1" onClick={() => act(u, (s) => resume(s, today), 'Resumed')}>Resume</button>}
+                  {sub && sub.status !== 'cancelled' && (
+                    <button className="btn-ghost px-3 py-1 text-red-600 dark:text-red-400" onClick={() => cancel(u)}>Cancel</button>
+                  )}
+                </div>
+              </Td>
+            </tr>
+          );
+        })}
+      </TableCard>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { replyMessage, setMessageStatus } from '../../store/messagesSlice';
-import { Badge, fmt } from './shared';
+import { Badge, Empty, PageHead, fmt } from './shared';
 
 function Ticket({ m }) {
   const dispatch = useDispatch();
@@ -20,12 +20,12 @@ function Ticket({ m }) {
   };
 
   return (
-    <div className="card">
+    <div className="card p-5">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="mr-auto font-semibold">{m.subject}</h3>
+        <h3 className="mr-auto font-display text-xl font-semibold">{m.subject}</h3>
         <Badge status={m.status} />
       </div>
-      <p className="mt-1 text-xs text-stone-500">{m.name} · {m.email} · {fmt(m.createdAt)}</p>
+      <p className="mt-1 muted text-xs">{m.name} · {m.email} · {fmt(m.createdAt)}</p>
       <p className="mt-3 whitespace-pre-wrap text-sm">{m.message}</p>
       {m.status === 'open' ? (
         <form onSubmit={send} className="mt-4 space-y-3">
@@ -33,8 +33,8 @@ function Ticket({ m }) {
           <button className="btn-primary" type="submit">Send reply</button>
         </form>
       ) : (
-        <div className="mt-4 rounded-xl bg-stone-100 p-3 text-sm dark:bg-stone-800">
-          <p className="text-xs text-stone-500">Your reply</p>
+        <div className="mt-4 rounded-xl bg-orange-50 p-3 text-sm dark:bg-stone-800">
+          <p className="muted text-xs">Your reply</p>
           <p className="whitespace-pre-wrap">{m.reply || 'Marked resolved without a reply.'}</p>
           <button className="btn-ghost mt-3 px-3 py-1.5" onClick={reopen}>Reopen</button>
         </div>
@@ -49,16 +49,23 @@ export default function Inbox() {
   const shown = items.filter((m) => m.status === tab);
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
+    <div>
+      <PageHead eyebrow="Support" title="Inbox" hint="Messages from the contact form." />
+      <div role="tablist" className="mb-4 flex gap-2">
         {['open', 'resolved'].map((t) => (
-          <button key={t} className={`capitalize ${tab === t ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setTab(t)}>
+          <button key={t} role="tab" aria-selected={tab === t} className="chip capitalize" onClick={() => setTab(t)}>
             {t} ({items.filter((m) => m.status === t).length})
           </button>
         ))}
       </div>
-      {shown.map((m) => <Ticket key={m.id} m={m} />)}
-      {!shown.length && <p className="card text-center text-sm text-stone-500">No {tab} messages.</p>}
+      <div className="space-y-4">
+        {shown.map((m) => <Ticket key={m.id} m={m} />)}
+      </div>
+      {!shown.length && (
+        <div className="card">
+          <Empty icon={tab === 'open' ? '🎉' : '📭'} title={tab === 'open' ? 'Inbox zero' : 'Nothing resolved yet'} hint={`No ${tab} messages.`} />
+        </div>
+      )}
     </div>
   );
 }

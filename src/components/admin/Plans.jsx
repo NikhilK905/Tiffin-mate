@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { savePlans } from '../../store/catalogSlice';
-import { rupees } from './shared';
+import { Empty, PageHead, rupees } from './shared';
 
 const blankPlan = { name: '', diet: 'veg', mealsPerDay: 1, price: '', description: '', popular: false };
 
@@ -20,7 +20,7 @@ function PlanForm({ initial, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={submit} className="card grid gap-4 sm:grid-cols-2">
+    <form onSubmit={submit} className="card mb-4 grid gap-4 p-5 sm:grid-cols-2">
       <label className="label">Name<input className="input" value={f.name} onChange={set('name')} /></label>
       <label className="label">Price (₹ / month)<input className="input" type="number" min="1" value={f.price} onChange={set('price')} /></label>
       <label className="label">Diet
@@ -72,30 +72,31 @@ export default function Plans() {
   };
 
   return (
-    <div className="space-y-4">
-      {editing ? (
-        <PlanForm key={editing.id ?? 'new'} initial={editing} onSave={save} onCancel={() => setEditing(null)} />
-      ) : (
-        <button className="btn-primary" onClick={() => setEditing(blankPlan)}>Add plan</button>
-      )}
+    <div>
+      <PageHead eyebrow="Plans" title="Meal plans" hint="Changes show up on the public plans page straight away.">
+        {!editing && <button className="btn-primary" onClick={() => setEditing(blankPlan)}>➕ Add plan</button>}
+      </PageHead>
+      {editing && <PlanForm key={editing.id ?? 'new'} initial={editing} onSave={save} onCancel={() => setEditing(null)} />}
       <div className="grid gap-4 md:grid-cols-2">
         {plans.map((p) => (
-          <div key={p.id} className="card">
-            <h3 className="flex flex-wrap items-center gap-2 font-semibold">
-              {p.name}
-              {p.popular && <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800 dark:bg-orange-900/40 dark:text-orange-300">Popular</span>}
-            </h3>
-            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
-              {p.diet === 'veg' ? 'Veg' : 'Non-veg'} · {p.mealsPerDay} meal{p.mealsPerDay > 1 ? 's' : ''}/day · {rupees(p.price)}/month
+          <div key={p.id} className="card flex flex-col p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="mr-auto font-display text-xl font-semibold">{p.name}</h3>
+              {p.popular && <span className="badge-brand">★ Popular</span>}
+              <span className={p.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}>{p.diet === 'veg' ? 'Veg' : 'Non-veg'}</span>
+            </div>
+            <p className="mt-1 font-display text-2xl font-bold text-orange-600">
+              {rupees(p.price)}<span className="muted font-sans text-sm font-normal"> / month · {p.mealsPerDay} meal{p.mealsPerDay > 1 ? 's' : ''} a day</span>
             </p>
-            <p className="mt-2 text-sm">{p.description}</p>
+            <p className="muted mt-2 flex-1 text-sm">{p.description}</p>
             <div className="mt-4 flex gap-3">
-              <button className="btn-ghost" onClick={() => setEditing(p)}>Edit</button>
-              <button className="btn-ghost text-red-600 dark:text-red-400" onClick={() => remove(p)}>Delete</button>
+              <button className="btn-ghost px-4 py-1.5" onClick={() => setEditing(p)}>Edit</button>
+              <button className="btn-ghost px-4 py-1.5 text-red-600 dark:text-red-400" onClick={() => remove(p)}>Delete</button>
             </div>
           </div>
         ))}
       </div>
+      {!plans.length && <div className="card"><Empty icon="📋" title="No plans yet" hint="Add your first plan." /></div>}
     </div>
   );
 }
