@@ -38,7 +38,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-10 border-b border-orange-100 bg-white/90 shadow-sm backdrop-blur dark:border-stone-800 dark:bg-stone-950/90">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <Link to="/" onClick={() => setOpen(false)} className="mr-auto flex items-center gap-2 font-display text-xl font-bold">
-          <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-600 text-lg shadow-sm">🍱</span>
+          <span aria-hidden="true" className="text-2xl">🍱</span>
           <span>Dabba<span className="text-orange-600">Dost</span></span>
         </Link>
         {user && !isAdmin && <NotificationBell />}
