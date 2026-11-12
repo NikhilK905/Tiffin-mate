@@ -90,12 +90,13 @@ const sweep = async (label, paths) => {
   }
   await viewport(1280);
 };
-const dark = async (label, path) => {
+const dark = async (label, path, width = 1280) => {
+  await viewport(width);
   await js(`localStorage.setItem('tiffin-theme','dark')`);
   await go(path);
   const s = await js(`const bg=getComputedStyle(document.body).backgroundColor.match(/\\d+/g).map(Number); return {dark:document.documentElement.classList.contains('dark'), lum:(bg[0]+bg[1]+bg[2])/3}`);
   check(`dark mode on ${path}`, s.dark && s.lum < 80, JSON.stringify(s));
-  await shoot(`dark-${label}`, 1280);
+  await shoot(`dark-${label}`, width);
   await js(`localStorage.setItem('tiffin-theme','light')`);
 };
 
@@ -336,6 +337,9 @@ await step('9', async () => {
   // logged-out state
   await sweep('public', ['/', '/plans', '/menu', '/about', '/contact', '/login', '/register']);
   await dark('home', '/');
+  await dark('menu', '/menu');
+  await dark('menu', '/menu', 390);
+  await viewport(1280);
   // admin state
   await go('/login');
   await login('admin@dabbadost.in', 'admin123');
