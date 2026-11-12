@@ -6,53 +6,77 @@ import { selectSubscription } from '../store/subscriptionSlice';
 import { todayISO } from '../lib/subscription';
 import { reminders } from '../lib/tracking';
 
+const ICON = { renew: '⏳', due: '💳', paused: '⏸️' };
+
 export default function Notifications() {
   const user = useSelector(selectUser);
   const sub = useSelector(selectSubscription);
   const announcements = useSelector((s) => s.notifications.announcements);
-  const read = useSelector((s) => s.notifications.readByEmail[s.auth.currentEmail] ?? []);
+  const read = useSelector((s) => s.notifications.readByEmail[s.auth.currentEmail]) ?? [];
   const unread = useSelector(selectUnreadCount);
   const dispatch = useDispatch();
   const alerts = reminders(sub, todayISO());
 
   return (
-    <section className="mx-auto max-w-2xl space-y-6 py-12">
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl font-bold">Notifications</h1>
+    <section className="mx-auto max-w-2xl py-10">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="eyebrow">Inbox</p>
+          <h1 className="page-title mt-1">Notifications</h1>
+          <p className="muted mt-2">{unread ? `${unread} unread announcement${unread > 1 ? 's' : ''}` : "You're all caught up."}</p>
+        </div>
         <button className="btn-ghost" disabled={!unread} onClick={() => dispatch(markAllRead(user.email))}>Mark all read</button>
-      </div>
+      </header>
 
       {alerts.length > 0 && (
-        <ul className="space-y-3" aria-label="Reminders">
-          {alerts.map((r) => (
-            <li key={r.id} className="card flex items-center justify-between gap-4 border-orange-300 dark:border-orange-800">
-              <div>
-                <p className="font-medium">{r.title}</p>
-                <p className="text-sm text-stone-600 dark:text-stone-400">{r.body}</p>
-              </div>
-              <Link to={r.to} className="btn-ghost shrink-0">Open</Link>
-            </li>
-          ))}
-        </ul>
+        <div className="mb-8">
+          <h2 className="eyebrow mb-3">Needs your attention</h2>
+          <ul className="space-y-3">
+            {alerts.map((r) => (
+              <li key={r.id} className="card flex items-center gap-4 border-orange-300 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950/30">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white text-xl shadow-sm dark:bg-stone-800" aria-hidden="true">{ICON[r.id]}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">{r.title}</p>
+                  <p className="muted text-sm">{r.body}</p>
+                </div>
+                <Link to={r.to} className="btn-primary shrink-0">Open</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
-      <ul className="space-y-3" aria-label="Announcements">
-        {announcements.map((a) => (
-          <li key={a.id} className="card">
-            <div className="flex items-baseline justify-between gap-3">
-              <p className="font-medium">
-                {!read.includes(a.id) && <span className="mr-2 inline-block size-2 rounded-full bg-orange-600 align-middle" aria-label="Unread" />}
-                {a.title}
-              </p>
-              <time className="shrink-0 text-xs text-stone-500" dateTime={a.createdAt}>
-                {new Date(a.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-              </time>
-            </div>
-            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{a.body}</p>
-          </li>
-        ))}
-        {announcements.length === 0 && <li className="text-stone-500">No announcements yet.</li>}
-      </ul>
+      <h2 className="eyebrow mb-3">Announcements</h2>
+      {announcements.length === 0 ? (
+        <div className="card py-12 text-center">
+          <p className="text-5xl" aria-hidden="true">🔔</p>
+          <h3 className="mt-3 font-display text-xl font-semibold">Nothing here yet</h3>
+          <p className="muted mt-1 text-sm">Announcements from the DabbaDost team will show up here.</p>
+        </div>
+      ) : (
+        <ul className="space-y-3">
+          {announcements.map((a) => {
+            const isNew = !read.includes(a.id);
+            return (
+              <li key={a.id} className="card flex gap-4 p-4">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-orange-100 text-xl dark:bg-orange-900/40" aria-hidden="true">📣</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="font-semibold">
+                      {a.title}
+                      {isNew && <span className="badge-brand ml-2 align-middle">New</span>}
+                    </p>
+                    <time className="shrink-0 text-xs text-stone-500" dateTime={a.createdAt}>
+                      {new Date(a.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                    </time>
+                  </div>
+                  <p className="muted mt-1 text-sm">{a.body}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </section>
   );
 }
