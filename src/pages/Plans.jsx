@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import PlanCard, { formatINR } from '../components/PlanCard';
+import PlanCard, { SkeletonGrid, formatINR } from '../components/PlanCard';
 
-const filters = [['all', 'All'], ['veg', 'Veg'], ['nonveg', 'Non-veg']];
+const filters = [['all', 'All'], ['veg', '🥬 Veg'], ['nonveg', '🍗 Non-veg']];
 
 export default function Plans() {
   const { plans, status } = useSelector((s) => s.catalog);
@@ -10,11 +10,11 @@ export default function Plans() {
   const shown = plans.filter((p) => diet === 'all' || p.diet === diet);
 
   return (
-    <>
-      <h1 className="font-display text-4xl font-bold">Our plans</h1>
-      <p className="mt-2 text-stone-600 dark:text-stone-400">Billed monthly. Skip days when you are away.</p>
+    <section className="py-12">
+      <h1 className="section-title">Our plans</h1>
+      <p className="muted mt-2">Billed monthly. Skip days when you are away.</p>
 
-      <div className="mt-6 flex gap-2" role="group" aria-label="Filter by diet">
+      <div className="mt-6 flex flex-wrap gap-2" role="group" aria-label="Filter by diet">
         {filters.map(([value, label]) => (
           <button
             key={value}
@@ -29,7 +29,7 @@ export default function Plans() {
       </div>
 
       {status !== 'ready' ? (
-        <p className="mt-8 text-stone-500">Loading plans…</p>
+        <div className="mt-8"><SkeletonGrid /></div>
       ) : (
         <>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
@@ -40,18 +40,18 @@ export default function Plans() {
           <h2 className="mt-16 font-display text-2xl font-bold">Compare plans</h2>
           <div className="card mt-4 overflow-x-auto p-0">
             <table className="w-full min-w-[32rem] text-left text-sm">
-              <thead className="border-b border-stone-200 dark:border-stone-800">
+              <thead className="bg-stone-50 dark:bg-stone-800/50">
                 <tr>
                   {['Plan', 'Diet', 'Meals', 'Price / month'].map((h) => <th key={h} className="px-4 py-3 font-semibold">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {plans.map((p) => (
-                  <tr key={p.id} className="border-b border-stone-100 last:border-0 dark:border-stone-800">
+                  <tr key={p.id} className="border-t border-stone-100 dark:border-stone-800">
                     <td className="px-4 py-3 font-medium">{p.name}</td>
-                    <td className="px-4 py-3">{p.diet === 'veg' ? 'Veg' : 'Non-veg'}</td>
+                    <td className="px-4 py-3"><span className={p.diet === 'veg' ? 'badge-veg' : 'badge-nonveg'}>{p.diet === 'veg' ? 'Veg' : 'Non-veg'}</span></td>
                     <td className="px-4 py-3">{p.mealsPerDay === 1 ? 'Lunch' : 'Lunch + dinner'}</td>
-                    <td className="px-4 py-3">{formatINR(p.price)}</td>
+                    <td className="px-4 py-3 font-semibold">{formatINR(p.price)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -59,6 +59,6 @@ export default function Plans() {
           </div>
         </>
       )}
-    </>
+    </section>
   );
 }

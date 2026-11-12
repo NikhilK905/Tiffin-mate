@@ -6,7 +6,9 @@ import { logout, selectIsAdmin, selectUser } from '../store/authSlice';
 import { useTheme } from '../context/ThemeContext';
 
 const linkClass = ({ isActive }) =>
-  `block py-2 text-sm font-medium transition hover:text-orange-600 md:py-0 ${isActive ? 'text-orange-600' : 'text-stone-600 dark:text-stone-300'}`;
+  `block border-b-2 py-2 text-sm font-medium transition hover:text-orange-600 md:py-1 ${
+    isActive ? 'border-orange-600 text-orange-600' : 'border-transparent text-stone-600 dark:text-stone-300'
+  }`;
 
 export default function Navbar() {
   const user = useSelector(selectUser);
@@ -32,11 +34,12 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-10 border-b border-stone-200 bg-stone-50/90 backdrop-blur dark:border-stone-800 dark:bg-stone-950/90">
+    <header className="sticky top-0 z-10 border-b border-stone-200 bg-stone-50/85 backdrop-blur dark:border-stone-800 dark:bg-stone-950/85">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <Link to="/" onClick={() => setOpen(false)} className="mr-auto font-display text-xl font-bold">
           🍱 Dabba<span className="text-orange-600">Dost</span>
         </Link>
+        {/* NotificationBell */}
         <button
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
@@ -59,7 +62,15 @@ export default function Navbar() {
             </NavLink>
           ))}
           {user ? (
-            <button onClick={onLogout} className="btn-ghost mt-2 px-4 py-2 md:mt-0">Log out</button>
+            <div className="mt-2 flex items-center gap-3 md:mt-0">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 font-bold text-orange-700 dark:bg-orange-900/50 dark:text-orange-300">
+                  {user.name[0].toUpperCase()}
+                </span>
+                {user.name.split(' ')[0]}
+              </span>
+              <button onClick={onLogout} className="btn-ghost px-4 py-2">Log out</button>
+            </div>
           ) : (
             <Link to="/login" onClick={() => setOpen(false)} className="btn-primary mt-2 px-4 py-2 md:mt-0">Log in</Link>
           )}

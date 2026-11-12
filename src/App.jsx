@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Route, Routes, useLocation } from 'react-router';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import { fetchCatalog } from './store/catalogSlice';
 import { selectUser } from './store/authSlice';
 import { useTheme } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { SkeletonGrid } from './components/PlanCard';
 import RequireAdmin from './components/RequireAdmin';
 import Home from './pages/Home';
 import Plans from './pages/Plans';
@@ -17,6 +18,17 @@ import Menu from './pages/Menu';
 import Auth from './pages/Auth';
 import Subscribe from './pages/Subscribe';
 import Dashboard from './pages/Dashboard';
+
+function NotFound() {
+  return (
+    <section className="py-24 text-center">
+      <p className="text-6xl" aria-hidden="true">🍽️</p>
+      <h1 className="mt-4 font-display text-4xl font-bold">This page is off the menu</h1>
+      <p className="muted mt-2">We couldn't find what you were looking for.</p>
+      <Link to="/" className="btn-primary mt-6">Back to home</Link>
+    </section>
+  );
+}
 
 function RequireAuth({ children }) {
   const user = useSelector(selectUser);
@@ -36,7 +48,7 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+      <main className="mx-auto min-h-[70vh] max-w-6xl px-4 pb-24 sm:px-6">
         {status === 'error' ? (
           <div className="card mt-10 text-center">
             <p>Could not load plans and menu.</p>
@@ -44,6 +56,8 @@ export default function App() {
               Try again
             </button>
           </div>
+        ) : status === 'idle' ? (
+          <div className="mt-10"><SkeletonGrid count={3} /></div>
         ) : (
           <Routes>
             <Route path="/" element={<Home />} />
@@ -56,7 +70,7 @@ export default function App() {
             <Route path="/register" element={<Auth mode="register" />} />
             <Route path="/subscribe/:planId" element={<RequireAuth><Subscribe /></RequireAuth>} />
             <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         )}
       </main>

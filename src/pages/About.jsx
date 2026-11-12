@@ -8,12 +8,12 @@ const team = ['Frontend Developer', 'Backend Developer', 'UI/UX Designer', 'Proj
 
 export default function About() {
   return (
-    <>
-      <h1 className="font-display text-4xl font-bold">About DabbaDost</h1>
+    <section className="py-12">
+      <h1 className="section-title">About DabbaDost</h1>
 
       <section className="mt-8">
         <h2 className="font-display text-2xl font-bold">Our mission</h2>
-        <p className="mt-2 max-w-2xl text-stone-600 dark:text-stone-400">
+        <p className="muted mt-2 max-w-2xl">
           Students should not have to choose between canteen food and skipping meals. DabbaDost brings affordable,
           home-style tiffin to your door on a simple monthly plan.
         </p>
@@ -23,9 +23,9 @@ export default function About() {
         <h2 className="font-display text-2xl font-bold">How our kitchens work</h2>
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           {kitchens.map(([title, body]) => (
-            <div key={title} className="card">
+            <div key={title} className="card card-hover">
               <h3 className="font-semibold">{title}</h3>
-              <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{body}</p>
+              <p className="muted mt-1 text-sm">{body}</p>
             </div>
           ))}
         </div>
@@ -35,7 +35,7 @@ export default function About() {
         <h2 className="font-display text-2xl font-bold">Team</h2>
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((role, i) => (
-            <div key={role} className="card text-center">
+            <div key={role} className="card card-hover text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 font-display text-2xl font-bold text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
                 {String.fromCharCode(65 + i)}
               </div>
@@ -45,6 +45,6 @@ export default function About() {
           ))}
         </div>
       </section>
-    </>
+    </section>
   );
 }

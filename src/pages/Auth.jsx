@@ -8,6 +8,7 @@ export default function Auth({ mode }) {
   const isRegister = mode === 'register';
   const [form, setForm] = useState({ name: '', email: '', password: '', college: '' });
   const [busy, setBusy] = useState(false);
+  const [show, setShow] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const from = useLocation().state?.from;
@@ -29,9 +30,19 @@ export default function Auth({ mode }) {
   };
 
   return (
-    <section className="mx-auto max-w-md py-12">
-      <form onSubmit={onSubmit} className="card space-y-4">
-        <h1 className="font-display text-3xl font-bold">{isRegister ? 'Create your account' : 'Log in'}</h1>
+    <section className="mx-auto my-10 grid max-w-4xl overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-(--shadow-soft) md:grid-cols-2 dark:border-stone-800 dark:bg-stone-900">
+      <aside className="bg-gradient-to-br from-orange-600 to-amber-500 p-8 text-white md:p-10">
+        <p className="font-display text-2xl font-bold">🍱 DabbaDost</p>
+        <p className="mt-6 text-5xl" aria-hidden="true">🍛 🥗 🍚</p>
+        <h2 className="mt-4 font-display text-2xl font-bold">Home-style meals, every day.</h2>
+        <ul className="mt-5 space-y-2 text-sm text-orange-50">
+          {['Fresh from local home kitchens', 'Delivered to your hostel gate', 'Skip days when you are away'].map((b) => (
+            <li key={b} className="flex gap-2"><span aria-hidden="true">✓</span>{b}</li>
+          ))}
+        </ul>
+      </aside>
+      <form onSubmit={onSubmit} className="space-y-4 p-8 md:p-10">
+        <h1 className="font-display text-3xl font-bold">{isRegister ? 'Create your account' : 'Welcome back'}</h1>
         {isRegister && (
           <label className="label">
             Full name
@@ -42,18 +53,29 @@ export default function Auth({ mode }) {
           Email
           <input className="input" type="email" value={form.email} onChange={set('email')} autoComplete="email" required />
         </label>
-        <label className="label">
-          Password
-          <input
-            className="input"
-            type="password"
-            value={form.password}
-            onChange={set('password')}
-            autoComplete={isRegister ? 'new-password' : 'current-password'}
-            minLength={isRegister ? 6 : undefined}
-            required
-          />
-        </label>
+        <div>
+          <label htmlFor="password" className="label">Password</label>
+          <div className="relative">
+            <input
+              id="password"
+              className="input pr-16"
+              type={show ? 'text' : 'password'}
+              value={form.password}
+              onChange={set('password')}
+              autoComplete={isRegister ? 'new-password' : 'current-password'}
+              minLength={isRegister ? 6 : undefined}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShow(!show)}
+              aria-pressed={show}
+              className="absolute inset-y-0 right-3 mt-1 text-xs font-semibold text-orange-600 hover:underline"
+            >
+              {show ? 'Hide' : 'Show'}
+            </button>
+          </div>
+        </div>
         {isRegister && (
           <label className="label">
             College / hostel <span className="text-stone-400">(optional)</span>
@@ -63,7 +85,7 @@ export default function Auth({ mode }) {
         <button className="btn-primary w-full" disabled={busy}>
           {isRegister ? 'Sign up' : 'Log in'}
         </button>
-        <p className="text-center text-sm text-stone-600 dark:text-stone-400">
+        <p className="muted text-center text-sm">
           {isRegister ? 'Already have an account? ' : 'New here? '}
           <Link to={isRegister ? '/login' : '/register'} state={{ from }} className="font-semibold text-orange-600 hover:underline">
             {isRegister ? 'Log in' : 'Create an account'}
