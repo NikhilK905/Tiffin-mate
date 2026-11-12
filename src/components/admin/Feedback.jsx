@@ -15,7 +15,7 @@ export default function Feedback() {
       <PageHead eyebrow="Feedback" title="What students think" hint="Ratings are one per student, per meal, per day." />
       <div className="grid grid-cols-3 gap-3 sm:gap-4">
         {cards.map(([label, icon, list]) => (
-          <Stat key={label} icon={icon} tone="yellow" label={label} value={list.length ? avg(list).toFixed(1) : '—'} hint={`${list.length} ratings`} />
+          <Stat key={label} icon={icon} tone="yellow" label={label} value={list.length ? avg(list).toFixed(1) : '—'} hint={`${list.length} rating${list.length === 1 ? '' : 's'}`} />
         ))}
       </div>
       <div className="mt-6">

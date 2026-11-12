@@ -49,9 +49,9 @@ export default function App() {
   }, [status, dispatch]);
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="mx-auto min-h-[55vh] max-w-6xl px-4 pb-24 sm:px-6">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 sm:px-6">
         {status === 'error' ? (
           <div className="card mt-10 text-center">
             <p>Could not load plans and menu.</p>
@@ -82,6 +82,6 @@ export default function App() {
       </main>
       <Footer />
       <ToastContainer position="bottom-right" autoClose={2500} theme={theme} />
-    </>
+    </div>
   );
 }

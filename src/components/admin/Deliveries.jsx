@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { todayISO } from '../../lib/subscription';
+import { ADDONS, todayISO } from '../../lib/subscription';
 import { Empty, PageHead, TableCard, Td, fmt, students } from './shared';
 
 // Print only the kitchen list, whatever chrome the app wraps around it.
@@ -11,7 +11,12 @@ const printCss = `@media print {
   #kitchen .no-print { display: none; }
 }`;
 
-const list = (v) => (Array.isArray(v) ? v.join(', ') : v);
+// Add-on ids → names; preferences object → "Hot spice · Jain · <notes>". Old subs may store strings.
+const addonNames = (v) => (Array.isArray(v) ? v.map((id) => ADDONS.find((a) => a.id === id)?.name ?? id).join(', ') : v);
+const prefText = (p) =>
+  p && typeof p === 'object'
+    ? [p.spice && `${p.spice[0].toUpperCase()}${p.spice.slice(1)} spice`, p.jain && 'Jain', p.notes].filter(Boolean).join(' · ')
+    : p;
 
 export default function Deliveries() {
   const users = useSelector((s) => s.auth.users);
@@ -51,7 +56,7 @@ export default function Deliveries() {
             <Td>{plan?.name ?? sub.planId}</Td>
             <Td><span className="badge-brand">{plan?.mealsPerDay === 2 ? 'Lunch + dinner' : 'Lunch'}</span></Td>
             <Td>{sub.address}</Td>
-            <Td className="muted">{[list(sub.addons), list(sub.preferences)].filter(Boolean).join(' · ') || '—'}</Td>
+            <Td className="muted">{[addonNames(sub.addons), prefText(sub.preferences)].filter(Boolean).join(' · ') || '—'}</Td>
           </tr>
         ))}
       </TableCard>

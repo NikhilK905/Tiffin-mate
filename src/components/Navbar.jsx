@@ -66,7 +66,7 @@ export default function Navbar() {
           {user ? (
             <div className="mt-2 flex items-center gap-3 md:mt-0">
               <Link to={isAdmin ? '/admin' : '/profile'} onClick={() => setOpen(false)} title="My profile" className="flex items-center gap-2 text-sm font-medium hover:text-orange-600">
-                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-turmeric-300 font-bold text-stone-900 dark:bg-turmeric-400 dark:text-orange-300">
+                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-turmeric-300 font-bold text-stone-900 dark:bg-turmeric-400 dark:text-stone-900">
                   {user.name[0].toUpperCase()}
                 </span>
                 {user.name.split(' ')[0]}

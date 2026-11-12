@@ -24,7 +24,7 @@ export default function Overview() {
         <Stat icon="⏸️" tone="yellow" label="Paused" value={all.filter((x) => x.status === 'paused').length} />
         <Stat icon="🚫" tone="stone" label="Cancelled" value={all.filter((x) => x.status === 'cancelled').length} />
         <Stat icon="💰" tone="brand" label="Monthly revenue" value={rupees(active.reduce((sum, x) => sum + x.price, 0))} hint="From active plans" />
-        <Stat icon="⭐" tone="yellow" label="Average rating" value={rating ? rating.toFixed(1) : '—'} hint={`${feedback.length} ratings`} />
+        <Stat icon="⭐" tone="yellow" label="Average rating" value={rating ? rating.toFixed(1) : '—'} hint={`${feedback.length} rating${feedback.length === 1 ? '' : 's'}`} />
       </div>
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <div className="card p-5">
