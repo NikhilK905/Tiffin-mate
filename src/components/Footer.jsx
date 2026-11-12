@@ -5,7 +5,6 @@ const links = [['Home', '/'], ['Plans', '/plans'], ['Menu', '/menu'], ['About', 
 export default function Footer() {
   return (
     <footer className="bg-stone-900 text-stone-300 dark:border-t dark:border-stone-800 dark:bg-stone-950">
-      <div className="h-1.5 bg-gradient-to-r from-orange-600 via-turmeric-400 to-green-600" aria-hidden="true" />
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3 sm:px-6">
         <div>
           <p className="flex items-center gap-2 font-display text-xl font-bold text-white">

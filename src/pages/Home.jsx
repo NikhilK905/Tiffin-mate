@@ -1,12 +1,10 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import PlanCard, { SkeletonGrid } from '../components/PlanCard';
-import Photo from '../components/Photo';
-import { images } from '../lib/images';
 import { pickDish, todayName } from '../lib/menu';
 
 const tints = ['bg-orange-100', 'bg-green-100', 'bg-turmeric-100', 'bg-orange-200'];
-const areas = ['North Campus', 'South Campus', 'Kamla Nagar', 'Mukherjee Nagar', 'Hauz Khas', 'Laxmi Nagar', 'Rohini'];
+const stats = [['2,000+', 'students fed'], ['4.8★', 'average rating'], ['12', 'areas served']];
 
 const steps = [
   ['📝', 'Pick a plan', 'Veg or non-veg, lunch only or both meals. Billed monthly, cancel anytime.'],
@@ -62,39 +60,69 @@ function TodayStrip({ menu }) {
   );
 }
 
+function TodayCard({ menu }) {
+  const today = menu.find((m) => m.day === todayName()) ?? menu[0];
+  return (
+    <div className="relative mx-auto w-full max-w-sm">
+      <div aria-hidden="true" className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-orange-200 via-amber-100 to-green-100 blur-2xl dark:from-orange-900/40 dark:via-amber-900/20 dark:to-green-900/20" />
+      <div className="card relative -rotate-1 p-7 shadow-(--shadow-lift)">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-orange-600">Today's tiffin</p>
+          <span className="badge-brand">{today ? today.day : '…'}</span>
+        </div>
+        {!today ? (
+          <div className="skeleton mt-4 h-40" />
+        ) : (
+          <div className="mt-5 space-y-5">
+            {[['🍛', 'Lunch · 1 pm', today.lunch], ['🍲', 'Dinner · 8 pm', today.dinner]].map(([icon, label, dish]) => (
+              <div key={label} className="flex items-start gap-4">
+                <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-3xl dark:bg-stone-800">{icon}</span>
+                <div className="min-w-0">
+                  <p className="text-xs font-medium tracking-wide text-stone-500 uppercase">{label}</p>
+                  <p className="font-semibold">{pickDish(dish, 'veg')}</p>
+                  {dish.includes(' / ') && <p className="text-xs text-stone-500">Non-veg: {pickDish(dish, 'nonveg')}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="mt-6 flex items-center gap-2 border-t border-dashed border-stone-200 pt-4 text-xs text-stone-500 dark:border-stone-700">
+          <span aria-hidden="true">🛵</span> Out for delivery from local home kitchens
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { plans, menu, status } = useSelector((s) => s.catalog);
   const loading = status !== 'ready';
 
   return (
     <>
-      <section className="grid items-center gap-8 pt-8 pb-2 sm:pt-12 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
+      <section className="grid items-center gap-12 py-12 sm:py-20 lg:grid-cols-2">
         <div>
           <span className="badge-brand">🍱 Monthly tiffin for students</span>
-          <h1 className="mt-4 font-display text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            Ghar ka khana, delivered to your <span className="text-orange-600">hostel</span> gate.
+          <h1 className="mt-4 font-display text-4xl leading-tight font-bold tracking-tight sm:text-6xl">
+            Home-style food, delivered to your <span className="text-orange-600">hostel</span> every day.
           </h1>
-          <p className="muted mt-4 max-w-lg text-lg">
+          <p className="muted mt-5 max-w-lg text-lg">
             Fresh meals from local home kitchens, for less than the canteen. One subscription, no daily ordering.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/plans" className="btn-primary px-7 py-3 text-base">See plans</Link>
             <Link to="/menu" className="btn-ghost px-7 py-3 text-base">View menu</Link>
           </div>
-          <div className="mt-7">
-            <p className="text-xs font-semibold tracking-wide text-stone-500 uppercase">Delivering near</p>
-            <ul className="mt-2 flex flex-wrap gap-2">
-              {areas.map((c) => <li key={c} className="rounded-full border border-stone-200 bg-white px-3 py-1 text-sm font-medium text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300">{c}</li>)}
-            </ul>
-          </div>
+          <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-stone-200 pt-6 dark:border-stone-800">
+            {stats.map(([value, label]) => (
+              <div key={label}>
+                <dt className="font-display text-2xl font-bold sm:text-3xl">{value}</dt>
+                <dd className="text-xs text-stone-500 sm:text-sm">{label}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <div className="relative pb-4 pl-2 lg:pl-6">
-          <div aria-hidden="true" className="absolute -top-3 right-0 h-3/4 w-3/4 rounded-[2.5rem] bg-turmeric-300 dark:bg-turmeric-700/40" />
-          <Photo image={images.hero} eager className="relative h-72 w-full rounded-[2.5rem] border-4 border-white shadow-(--shadow-lift) sm:h-96 dark:border-stone-800" />
-          <span className="absolute top-6 left-0 rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-(--shadow-soft) dark:bg-stone-800">🛵 Delivered by 1 pm</span>
-          <span className="absolute right-2 bottom-0 rounded-full bg-white px-4 py-2 text-sm font-semibold shadow-(--shadow-soft) dark:bg-stone-800">⭐ 4.8 from 2,000+ students</span>
-          <span className="badge absolute bottom-16 bg-green-100 text-green-800 dark:bg-green-100 dark:text-green-800 left-0 px-4 py-2 text-sm shadow-(--shadow-soft)">🥬 Pure veg options</span>
-        </div>
+        <TodayCard menu={menu} />
       </section>
 
       <TodayStrip menu={menu} />
@@ -171,12 +199,6 @@ export default function Home() {
             </details>
           ))}
         </div>
-      </section>
-
-      <section className="section overflow-hidden rounded-3xl bg-gradient-to-br from-orange-600 via-orange-500 to-turmeric-400 px-6 py-14 text-center text-white shadow-(--shadow-lift)">
-        <h2 className="font-display text-3xl font-bold sm:text-4xl">Skip the canteen queue.</h2>
-        <p className="mx-auto mt-3 max-w-md text-orange-50">Join thousands of students eating better for less. Cancel any time.</p>
-        <Link to="/register" className="btn mt-7 bg-white px-7 py-3 text-base text-orange-700 shadow-md hover:-translate-y-0.5 hover:bg-orange-50">Get started</Link>
       </section>
     </>
   );
