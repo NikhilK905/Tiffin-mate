@@ -8,7 +8,7 @@ const kitchens = [
   ['Delivered hot', 'Riders reach your hostel or PG gate by 1 pm for lunch and 8 pm for dinner.'],
 ];
 
-const team = ['Frontend Developer', 'Backend Developer', 'UI/UX Designer', 'Project Lead'];
+const team = ['Lucky Singh', 'Ankit Yadav', 'Nikhil Kumar'];
 
 export default function About() {
   return (
@@ -48,14 +48,10 @@ export default function About() {
 
       <section className="mt-12">
         <h2 className="font-display text-2xl font-bold">Team</h2>
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {team.map((role, i) => (
-            <div key={role} className="card card-hover text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-turmeric-300 font-display text-2xl font-bold text-stone-900">
-                {String.fromCharCode(65 + i)}
-              </div>
-              <h3 className="mt-3 font-semibold">Team Member {i + 1}</h3>
-              <p className="text-sm text-stone-500">{role}</p>
+        <div className="mt-6 grid gap-6 sm:grid-cols-3">
+          {team.map((name) => (
+            <div key={name} className="card card-hover text-center">
+              <h3 className="font-semibold">{name}</h3>
             </div>
           ))}
         </div>
