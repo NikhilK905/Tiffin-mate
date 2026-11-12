@@ -1,0 +1,27 @@
+[
+  {
+    "id": "basic",
+    "name": "Hostel Basic",
+    "diet": "veg",
+    "mealsPerDay": 1,
+    "price": 1999,
+    "description": "One veg lunch a day: dal, sabzi, 4 rotis and rice."
+  },
+  {
+    "id": "ghar",
+    "name": "Ghar Ka Khana",
+    "diet": "veg",
+    "mealsPerDay": 2,
+    "price": 3499,
+    "description": "Veg lunch and dinner with salad, and a sweet every Sunday.",
+    "popular": true
+  },
+  {
+    "id": "protein",
+    "name": "Protein Pack",
+    "diet": "nonveg",
+    "mealsPerDay": 2,
+    "price": 4299,
+    "description": "Lunch and dinner, with eggs or chicken four days a week."
+  }
+]

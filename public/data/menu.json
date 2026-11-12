@@ -1,0 +1,9 @@
+[
+  { "day": "Monday", "lunch": "Rajma chawal, jeera aloo", "dinner": "Paneer butter masala, roti" },
+  { "day": "Tuesday", "lunch": "Dal tadka, bhindi, roti", "dinner": "Veg pulao, raita" },
+  { "day": "Wednesday", "lunch": "Chole, rice, salad", "dinner": "Egg curry / mix veg, roti" },
+  { "day": "Thursday", "lunch": "Kadhi pakoda, rice", "dinner": "Aloo gobi, dal, roti" },
+  { "day": "Friday", "lunch": "Sambar rice, poriyal", "dinner": "Chicken curry / malai kofta, roti" },
+  { "day": "Saturday", "lunch": "Dal makhani, jeera rice", "dinner": "Veg biryani, raita" },
+  { "day": "Sunday", "lunch": "Poori, aloo sabzi, kheer", "dinner": "Chicken biryani / paneer biryani" }
+]
