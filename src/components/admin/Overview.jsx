@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { avg, fmt, rupees, students } from './shared';
+import { Empty, PageHead, Stat, avg, fmt, rupees, students } from './shared';
 
 export default function Overview() {
   const users = useSelector((s) => s.auth.users);
@@ -11,54 +11,53 @@ export default function Overview() {
   const all = list.map((u) => subs[u.email]).filter(Boolean);
   const active = all.filter((x) => x.status === 'active');
   const rating = avg(feedback);
-  const cards = [
-    ['Students', list.length],
-    ['Active', active.length],
-    ['Paused', all.filter((x) => x.status === 'paused').length],
-    ['Cancelled', all.filter((x) => x.status === 'cancelled').length],
-    ['Monthly revenue', rupees(active.reduce((sum, x) => sum + x.price, 0))],
-    ['Average rating', rating ? `${rating.toFixed(1)} ★` : '—'],
-  ];
   const perPlan = plans.map((p) => ({ name: p.name, n: active.filter((x) => x.planId === p.id).length }));
   const max = Math.max(1, ...perPlan.map((p) => p.n));
   const latest = list.slice(-5).reverse(); // users are stored in signup order
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        {cards.map(([label, value]) => (
-          <div key={label} className="card">
-            <p className="text-sm text-stone-500">{label}</p>
-            <p className="mt-1 font-display text-3xl font-bold">{value}</p>
-          </div>
-        ))}
+    <div>
+      <PageHead eyebrow="Overview" title="How DabbaDost is doing" hint="Live numbers from every student account." />
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
+        <Stat icon="🎓" tone="brand" label="Students" value={list.length} />
+        <Stat icon="✅" tone="green" label="Active" value={active.length} />
+        <Stat icon="⏸️" tone="yellow" label="Paused" value={all.filter((x) => x.status === 'paused').length} />
+        <Stat icon="🚫" tone="stone" label="Cancelled" value={all.filter((x) => x.status === 'cancelled').length} />
+        <Stat icon="💰" tone="brand" label="Monthly revenue" value={rupees(active.reduce((sum, x) => sum + x.price, 0))} hint="From active plans" />
+        <Stat icon="⭐" tone="yellow" label="Average rating" value={rating ? rating.toFixed(1) : '—'} hint={`${feedback.length} ratings`} />
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="card">
-          <h2 className="font-semibold">Active subscribers per plan</h2>
-          <ul className="mt-4 space-y-3">
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="card p-5">
+          <h3 className="font-display text-xl font-semibold">Active subscribers per plan</h3>
+          <ul className="mt-4 space-y-4">
             {perPlan.map((p) => (
               <li key={p.name} className="text-sm">
-                <div className="flex justify-between"><span>{p.name}</span><span className="font-medium">{p.n}</span></div>
-                <div className="mt-1 h-3 rounded-full bg-stone-100 dark:bg-stone-800">
-                  <div className="h-3 rounded-full bg-orange-500" style={{ width: `${(p.n / max) * 100}%` }} />
+                <div className="flex justify-between"><span>{p.name}</span><b>{p.n}</b></div>
+                <div className="mt-1.5 h-3 rounded-full bg-stone-100 dark:bg-stone-800">
+                  <div className="h-3 rounded-full bg-orange-600 transition-all" style={{ width: `${(p.n / max) * 100}%` }} />
                 </div>
               </li>
             ))}
-            {!perPlan.length && <li className="text-sm text-stone-500">No plans yet.</li>}
           </ul>
+          {!perPlan.length && <Empty icon="📋" title="No plans yet" hint="Add one in the Plans section." />}
         </div>
-        <div className="card">
-          <h2 className="font-semibold">Latest signups</h2>
-          <ul className="mt-4 divide-y divide-stone-100 text-sm dark:divide-stone-800">
+        <div className="card p-5">
+          <h3 className="font-display text-xl font-semibold">Latest signups</h3>
+          <ul className="mt-2 divide-y divide-stone-100 dark:divide-stone-800">
             {latest.map((u) => (
-              <li key={u.email} className="py-2">
-                <span className="font-medium">{u.name}</span> <span className="text-stone-500">{u.email}</span>
-                {subs[u.email] && <span className="block text-xs text-stone-500">Starts {fmt(subs[u.email].startDate)}</span>}
+              <li key={u.email} className="flex items-center gap-3 py-3">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-orange-100 font-semibold text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
+                  {u.name[0]?.toUpperCase()}
+                </span>
+                <div className="min-w-0 text-sm">
+                  <p className="truncate font-medium">{u.name}</p>
+                  <p className="muted truncate text-xs">{u.email}</p>
+                </div>
+                <span className="muted ml-auto shrink-0 text-xs">{subs[u.email] ? `Starts ${fmt(subs[u.email].startDate)}` : 'No plan'}</span>
               </li>
             ))}
-            {!latest.length && <li className="py-2 text-stone-500">No students yet.</li>}
           </ul>
+          {!latest.length && <Empty icon="🎓" title="No students yet" />}
         </div>
       </div>
     </div>

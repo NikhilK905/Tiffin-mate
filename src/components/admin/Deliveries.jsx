@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 import { todayISO } from '../../lib/subscription';
-import { Th, fmt, students } from './shared';
+import { Empty, PageHead, TableCard, Td, fmt, students } from './shared';
 
 // Print only the kitchen list, whatever chrome the app wraps around it.
 const printCss = `@media print {
   body * { visibility: hidden; }
   #kitchen, #kitchen * { visibility: visible; }
   #kitchen { position: absolute; left: 0; top: 0; width: 100%; }
-  #kitchen .card { border: 0; }
+  #kitchen .card { border: 0; box-shadow: none; max-height: none; }
   #kitchen .no-print { display: none; }
 }`;
 
@@ -30,36 +30,31 @@ export default function Deliveries() {
   });
 
   return (
-    <div id="kitchen" className="space-y-6">
+    <div id="kitchen">
       <style>{printCss}</style>
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="mr-auto font-semibold">Deliveries for {fmt(today)} · {rows.length} tiffins</h2>
-        <button className="btn-ghost no-print" onClick={() => window.print()}>Print list</button>
-      </div>
-      <div className="card flex flex-wrap gap-x-8 gap-y-2 text-sm">
+      <PageHead eyebrow="Kitchen list" title={`Deliveries for ${fmt(today)}`} hint={`${rows.length} tiffins going out today.`}>
+        <button className="btn-primary no-print" onClick={() => window.print()}>🖨️ Print list</button>
+      </PageHead>
+      <div className="mb-4 flex flex-wrap gap-2">
         {Object.entries(totals).map(([name, n]) => (
-          <span key={name}>{name}: <b>{n}</b></span>
+          <span key={name} className="badge-brand px-3 py-1 text-sm">{name}: {n}</span>
         ))}
-        {!rows.length && <span className="text-stone-500">Nothing to deliver today.</span>}
       </div>
-      <div className="card overflow-x-auto">
-        <table className="w-full min-w-[48rem] text-left text-sm">
-          <Th cols={['Student', 'Plan', 'Meals', 'Address', 'Add-ons / preferences']} />
-          <tbody>
-            {rows.map(({ u, sub, plan }) => (
-              <tr key={u.email} className="border-b border-stone-100 last:border-0 dark:border-stone-800">
-                <td className="px-3 py-2 font-medium">{u.name}</td>
-                <td className="px-3 py-2">{plan?.name ?? sub.planId}</td>
-                <td className="px-3 py-2">{plan?.mealsPerDay === 2 ? 'Lunch + dinner' : 'Lunch'}</td>
-                <td className="px-3 py-2">{sub.address}</td>
-                <td className="px-3 py-2">
-                  {[list(sub.addons), list(sub.preferences)].filter(Boolean).join(' · ') || '—'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <TableCard
+        cols={['Student', 'Plan', 'Meals', 'Address', 'Add-ons / preferences']}
+        min="46rem"
+        empty={!rows.length && <Empty icon="🍽️" title="Nothing to deliver today" hint="Active subscriptions that start today or earlier, and aren't skipped, show up here." />}
+      >
+        {rows.map(({ u, sub, plan }) => (
+          <tr key={u.email}>
+            <Td className="font-medium">{u.name}</Td>
+            <Td>{plan?.name ?? sub.planId}</Td>
+            <Td><span className="badge-brand">{plan?.mealsPerDay === 2 ? 'Lunch + dinner' : 'Lunch'}</span></Td>
+            <Td>{sub.address}</Td>
+            <Td className="muted">{[list(sub.addons), list(sub.preferences)].filter(Boolean).join(' · ') || '—'}</Td>
+          </tr>
+        ))}
+      </TableCard>
     </div>
   );
 }
