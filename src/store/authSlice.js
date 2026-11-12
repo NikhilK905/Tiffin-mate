@@ -6,6 +6,15 @@ async function hash(email, password) {
   return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+// ponytail: demo-only seeded admin (admin@dabbadost.in / admin123). A real app needs server-side roles and no shared password in the bundle.
+export const ADMIN = {
+  name: 'Admin',
+  email: 'admin@dabbadost.in',
+  college: '',
+  role: 'admin',
+  passwordHash: 'dcfe82ece9a8efc4cd17c541670ff22d7455555dd7c1b74b205d01dc8b1cf8a4',
+};
+
 export const register = createAsyncThunk('auth/register', async (form, { getState, rejectWithValue }) => {
   const email = form.email.trim().toLowerCase();
   if (!form.name.trim()) return rejectWithValue('Please enter your name');
@@ -16,6 +25,7 @@ export const register = createAsyncThunk('auth/register', async (form, { getStat
     name: form.name.trim(),
     email,
     college: form.college.trim(),
+    role: 'student',
     passwordHash: await hash(email, form.password),
   };
 });
@@ -31,7 +41,7 @@ export const login = createAsyncThunk('auth/login', async (form, { getState, rej
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { users: {}, currentEmail: null },
+  initialState: { users: { [ADMIN.email]: ADMIN }, currentEmail: null },
   reducers: {
     logout: (state) => {
       state.currentEmail = null;
@@ -51,4 +61,5 @@ const authSlice = createSlice({
 
 export const { logout } = authSlice.actions;
 export const selectUser = (state) => state.auth.users[state.auth.currentEmail] ?? null;
+export const selectIsAdmin = (state) => selectUser(state)?.role === 'admin';
 export default authSlice.reducer;
