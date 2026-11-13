@@ -61,9 +61,10 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(register.fulfilled, (state, { payload }) => {
+      // register({ ...form, byAdmin: true }) adds the account without switching to it.
+      .addCase(register.fulfilled, (state, { payload, meta }) => {
         state.users[payload.email] = payload;
-        state.currentEmail = payload.email;
+        if (!meta.arg.byAdmin) state.currentEmail = payload.email;
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         state.currentEmail = payload.email;
