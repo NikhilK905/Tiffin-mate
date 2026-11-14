@@ -19,7 +19,7 @@ export default function About() {
           <h1 className="page-title mt-1">Food that feels like home</h1>
           <h2 className="mt-6 font-display text-xl font-bold">Our mission</h2>
           <p className="muted mt-2">
-            Students should not have to choose between canteen food and skipping meals. DabbaDost brings affordable,
+            Students should not have to choose between canteen food and skipping meals. TiffinMate brings affordable,
             home-style tiffin to your door on a simple monthly plan.
           </p>
           <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

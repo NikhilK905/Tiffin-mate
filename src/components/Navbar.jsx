@@ -39,7 +39,7 @@ export default function Navbar() {
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <Link to="/" onClick={() => setOpen(false)} className="mr-auto flex items-center gap-2 font-display text-xl font-bold">
           <span aria-hidden="true" className="text-2xl">🍱</span>
-          <span>Dabba<span className="text-orange-600">Dost</span></span>
+          <span>Tiffin<span className="text-orange-600">Mate</span></span>
         </Link>
         {user && !isAdmin && <NotificationBell />}
         <button

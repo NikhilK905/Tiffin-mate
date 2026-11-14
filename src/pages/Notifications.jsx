@@ -51,7 +51,7 @@ export default function Notifications() {
         <div className="card py-12 text-center">
           <p className="text-5xl" aria-hidden="true">🔔</p>
           <h3 className="mt-3 font-display text-xl font-semibold">Nothing here yet</h3>
-          <p className="muted mt-1 text-sm">Announcements from the DabbaDost team will show up here.</p>
+          <p className="muted mt-1 text-sm">Announcements from the TiffinMate team will show up here.</p>
         </div>
       ) : (
         <ul className="space-y-3">

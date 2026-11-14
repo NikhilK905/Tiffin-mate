@@ -34,7 +34,7 @@ export default function Auth({ mode }) {
   return (
     <section className="mx-auto my-8 grid max-w-4xl overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-(--shadow-soft) md:grid-cols-2 dark:border-stone-800 dark:bg-stone-900">
       <aside className="flex flex-col bg-gradient-to-br from-orange-600 via-orange-500 to-turmeric-400 p-8 text-white md:p-10">
-        <p className="font-display text-2xl font-bold">🍱 DabbaDost</p>
+        <p className="font-display text-2xl font-bold">🍱 TiffinMate</p>
         <h2 className="mt-8 font-display text-2xl font-bold">Home-style meals, every day.</h2>
         <ul className="mt-5 space-y-2 text-sm text-white">
           {['Fresh from local home kitchens', 'Delivered to your hostel gate', 'Skip days when you are away'].map((b) => (

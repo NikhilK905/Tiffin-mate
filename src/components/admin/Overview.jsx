@@ -17,7 +17,7 @@ export default function Overview() {
 
   return (
     <div>
-      <PageHead eyebrow="Overview" title="How DabbaDost is doing" hint="Live numbers from every student account." />
+      <PageHead eyebrow="Overview" title="How TiffinMate is doing" hint="Live numbers from every student account." />
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
         <Stat icon="🎓" tone="brand" label="Students" value={list.length} />
         <Stat icon="✅" tone="green" label="Active" value={active.length} />

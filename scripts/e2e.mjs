@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-const [, , BROWSER, BASE, OUT = '/tmp/dabbadost-shots'] = process.argv;
+const [, , BROWSER, BASE, OUT = '/tmp/tiffinmate-shots'] = process.argv;
 mkdirSync(OUT, { recursive: true });
 const proc = spawn(BROWSER, ['--remote-debugging-port=9333', '--window-size=1280,900', 'about:blank'], { stdio: 'ignore' });
 let wsUrl;
@@ -241,7 +241,7 @@ await step('5', async () => {
   check('5 payment shows as Due (cash)', /Due/.test(s.before) && /Cash/.test(s.before), s.before.replace(/\s+/g, ' '));
   check('5 Renew disabled (>7 days left) with explanation', s.renewDisabled && s.note);
   check('5 Mark as paid works: toast, row Paid, button gone', s.t.includes('Marked as paid') && /Paid/.test(s.after) && !s.stillBtn, `${s.t}; ${s.after.replace(/\s+/g, ' ')}`);
-  check('5 invoice opens with total and closes', s.inv.includes('DabbaDost') && /receipt/i.test(s.inv) && s.inv.includes('Test Student') && s.inv.includes('3,597') && s.closed, s.inv.replace(/\s+/g, ' ').slice(0, 120));
+  check('5 invoice opens with total and closes', s.inv.includes('TiffinMate') && /receipt/i.test(s.inv) && s.inv.includes('Test Student') && s.inv.includes('3,597') && s.closed, s.inv.replace(/\s+/g, ' ').slice(0, 120));
 });
 
 // ===== 6. rating (seed a subscription that started 3 days ago) =====
@@ -279,7 +279,7 @@ await step('7', async () => {
 
   await logout();
   await go('/login');
-  s = await login('admin@dabbadost.in', 'admin123');
+  s = await login('admin@tiffinmate.in', 'admin123');
   check('7 admin login lands on /admin', s.path === '/admin', s.path);
 
   const tab = (name) => js(`${H} [...document.querySelectorAll('[role=tab]')].find(t=>t.textContent.includes(${JSON.stringify(name)})).click(); await wait(300); return text()`);
@@ -342,7 +342,7 @@ await step('9', async () => {
   await viewport(1280);
   // admin state
   await go('/login');
-  await login('admin@dabbadost.in', 'admin123');
+  await login('admin@tiffinmate.in', 'admin123');
   const tabs = await js(`return [...document.querySelectorAll('[role=tab]')].map(t=>t.textContent.trim())`);
   for (const width of [1280, 390]) {
     await viewport(width);

@@ -1,4 +1,4 @@
-# DabbaDost design system
+# TiffinMate design system
 
 Light-first, warm and food-forward. All tokens live in `src/index.css`; dark mode is the `.dark` class (toggled by `ThemeContext`).
 The `stone` and `orange` Tailwind scales are remapped, so `text-stone-600`, `bg-stone-50`, `bg-orange-600` etc. are already on-palette.

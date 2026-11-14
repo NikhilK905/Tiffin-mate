@@ -6,13 +6,13 @@ async function hash(email, password) {
   return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ponytail: demo-only seeded admin (admin@dabbadost.in / admin123). A real app needs server-side roles and no shared password in the bundle.
+// ponytail: demo-only seeded admin (admin@tiffinmate.in / admin123). A real app needs server-side roles and no shared password in the bundle.
 export const ADMIN = {
   name: 'Admin',
-  email: 'admin@dabbadost.in',
+  email: 'admin@tiffinmate.in',
   college: '',
   role: 'admin',
-  passwordHash: 'dcfe82ece9a8efc4cd17c541670ff22d7455555dd7c1b74b205d01dc8b1cf8a4',
+  passwordHash: 'f6b87d064dee22d4ff570de28413c2e34df6548f5c4647e57d1aaa57ed77268b',
 };
 
 export const register = createAsyncThunk('auth/register', async (form, { getState, rejectWithValue }) => {

@@ -48,7 +48,7 @@ export default function Contact() {
         <p className="muted mt-2">Questions, feedback or a problem with your tiffin? We reply within a day.</p>
       </header>
       <ul className="mt-6 grid gap-3 sm:grid-cols-3">
-        {[['✉️', 'hello@dabbadost.example'], ['📞', '+91 90000 00000'], ['📍', 'Sample Nagar, Demo City']].map(([icon, text]) => (
+        {[['✉️', 'hello@tiffinmate.example'], ['📞', '+91 90000 00000'], ['📍', 'Sample Nagar, Demo City']].map(([icon, text]) => (
           <li key={text} className="flex items-center gap-3 rounded-2xl bg-turmeric-100 px-4 py-3 text-sm font-medium dark:bg-stone-900">
             <span aria-hidden="true" className="text-xl">{icon}</span>{text}
           </li>

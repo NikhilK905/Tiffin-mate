@@ -8,7 +8,7 @@ const notificationsSlice = createSlice({
     announcements: [
       {
         id: 'welcome',
-        title: 'Welcome to DabbaDost!',
+        title: 'Welcome to TiffinMate!',
         body: 'Skip any day before midnight and it is added to the end of your month.',
         createdAt: '2026-11-01T09:00:00.000Z',
       },

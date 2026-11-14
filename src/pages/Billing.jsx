@@ -115,7 +115,7 @@ export default function Billing() {
           <div id="invoice" className="w-full max-w-md rounded-2xl bg-white p-7 text-stone-900 shadow-2xl">
             <div className="flex items-start justify-between border-b border-dashed border-stone-300 pb-4">
               <div>
-                <p className="font-display text-2xl font-bold text-orange-600">DabbaDost 🍱</p>
+                <p className="font-display text-2xl font-bold text-orange-600">TiffinMate 🍱</p>
                 <p className="text-xs text-stone-500">Demo receipt · no real payment</p>
               </div>
               <div className="text-right text-xs text-stone-500">

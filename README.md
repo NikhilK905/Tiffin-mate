@@ -1,8 +1,8 @@
-# DabbaDost: Monthly Tiffin Subscription for Students
+# TiffinMate: Monthly Tiffin Subscription for Students
 
 ## 1. Introduction
 
-DabbaDost is a web application where students subscribe to a monthly tiffin (meal) plan from local home kitchens. This is a college project; all names, contact details and testimonials are fictional.
+TiffinMate is a web application where students subscribe to a monthly tiffin (meal) plan from local home kitchens. This is a college project; all names, contact details and testimonials are fictional.
 
 ## 2. Features
 
@@ -49,7 +49,7 @@ npm run build   # production build
 
 ## 6. Demo Admin Login
 
-- Email: `admin@dabbadost.in`
+- Email: `admin@tiffinmate.in`
 - Password: `admin123`
 
 ## 7. Data Storage

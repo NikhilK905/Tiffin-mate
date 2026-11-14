@@ -9,7 +9,7 @@ export default function Footer() {
         <div>
           <p className="flex items-center gap-2 font-display text-xl font-bold text-white">
             <span aria-hidden="true" className="text-2xl">🍱</span>
-            <span>Dabba<span className="text-turmeric-400">Dost</span></span>
+            <span>Tiffin<span className="text-turmeric-400">Mate</span></span>
           </p>
           <p className="mt-3 max-w-xs text-sm">Home-style tiffin for students, every day. Fresh from local kitchens to your hostel gate.</p>
           <p className="mt-4 flex gap-2 text-xl" aria-hidden="true">🍛 🥗 🍚 🫓</p>
@@ -24,13 +24,13 @@ export default function Footer() {
         </nav>
         <address className="text-sm not-italic">
           <h2 className="text-sm font-semibold text-white">Contact</h2>
-          <p className="mt-3">✉️ hello@dabbadost.example</p>
+          <p className="mt-3">✉️ hello@tiffinmate.example</p>
           <p className="mt-1">📞 +91 90000 00000</p>
           <p className="mt-1">📍 12 Example Lane, Sample Nagar, Demo City</p>
         </address>
       </div>
       <p className="border-t border-stone-800 py-4 text-center text-xs text-stone-400">
-        © {new Date().getFullYear()} DabbaDost. A college project; all details are fictional.
+        © {new Date().getFullYear()} TiffinMate. A college project; all details are fictional.
       </p>
     </footer>
   );
